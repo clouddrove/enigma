@@ -1,7 +1,7 @@
 ## To use Enigma for Docker
 
 1. Clone the repository
-`git clone https://github.com/clouddrove-sandbox/enigma.git`
+`git clone https://github.com/clouddrove/enigma.git`
 
 2. Set your values in `.enigma` file which is in `modules/docker`
 
