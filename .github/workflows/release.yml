@@ -32,7 +32,7 @@ jobs:
       run: go test -v ./...
 
     - name: Build
-      run: make package PROGRAM=${{ env.GOOS }}-${{ env.GOARCH }}/bin-${{ steps.repo-name.outputs.name }}${{ matrix.ext }} PACKAGE=dist/${{ steps.repo-name.outputs.name }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}.zip
+      run: make package PROGRAM=${{ env.GOOS }}-${{ env.GOARCH }}/${{ steps.repo-name.outputs.name }}${{ matrix.ext }} PACKAGE=dist/${{ steps.repo-name.outputs.name }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}.zip
       env:
         GOOS: ${{ matrix.GOOS }}
         GOARCH: ${{ matrix.GOARCH }}
