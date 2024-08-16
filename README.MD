@@ -9,16 +9,16 @@
 </p>
 
 <p align="center">
-<a href='https://facebook.com/sharer/sharer.php?u=https://github.com/clouddrove-sandbox/enigma'>
+<a href='https://facebook.com/sharer/sharer.php?u=https://github.com/clouddrove/enigma'>
   <img title="Share on Facebook" src="https://user-images.githubusercontent.com/50652676/62817743-4f64cb80-bb59-11e9-90c7-b057252ded50.png" />
 </a>
 <a href='https://www.instagram.com/cloud_drove?igsh=cHJqaDY3bGtnYmh3' title="Follow On Instagram">
   <img src="https://github.com/gauravghongde/social-icons/blob/master/SVG/Color/Instagram.svg" width="23" height="23" />
 </a>
-<a href='https://www.linkedin.com/shareArticle?mini=true&title=Github+Shared+Workflows&url=https://github.com/clouddrove-sandbox/enigma'>
+<a href='https://www.linkedin.com/shareArticle?mini=true&title=enigma&url=https://github.com/clouddrove/enigma'>
   <img title="Share on LinkedIn" src="https://user-images.githubusercontent.com/50652676/62817742-4e339e80-bb59-11e9-87b9-a1f68cae1049.png" />
 </a>
-<a href='https://twitter.com/intent/tweet/?text=Github+Shared+Workflows&url=https://github.com/clouddrove-sandbox/enigma'>
+<a href='https://twitter.com/intent/tweet/?text=enigma&url=https://github.com/clouddrove/enigma'>
   <img title="Share on Twitter" src="https://user-images.githubusercontent.com/50652676/62817740-4c69db00-bb59-11e9-8a79-3580fbbf6d5c.png" />
 </a>
 </p>
@@ -28,14 +28,14 @@
 This repo offers to Work effortlessly with Docker, Helm, Docker Compose, Terraform, and other essential DevOps tools. It streamlines your workflow by automating complex commands and managing configurations. Simply set your environment variables, and let Enigma handle rest. With its intuitive design and powerful automation, you’ll achieve greater efficiency and consistency in your DevOps processes.
 
 ## 🚀 Table Of Content
-1. [Docker](https://github.com/clouddrove-sandbox/enigma/blob/master/modules/docker/README.md)   
+1. [Docker](https://github.com/clouddrove/enigma/blob/master/modules/docker/README.md)   
 
 ## ✨ Contributors
 
 Big thanks to our contributors for elevating our project with their dedication and expertise! But, we do not wish to stop there, would like to invite contributions from the community in improving these projects and making them more versatile for better reach. Remember, every bit of contribution is immensely valuable, as, together, we are moving in only 1 direction, i.e. forward. 
 
-<a href="https://github.com/clouddrove-sandbox/enigma/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=clouddrove-sandbox/enigma&max" />
+<a href="https://github.com/clouddrove/enigma/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=clouddrove/enigma&max" />
 </a>
 <br>
 <br> 
@@ -50,9 +50,9 @@ Big thanks to our contributors for elevating our project with their dedication a
 
 
 ## Feedback 
-Spot a bug or have thoughts to share with us? Let's squash it together! Log it in our [issue tracker](https://github.com/clouddrove-sandbox/enigma/issues), feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
+Spot a bug or have thoughts to share with us? Let's squash it together! Log it in our [issue tracker](https://github.com/clouddrove/enigma/issues), feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
 
-Show some love with a ★ on [our GitHub](https://github.com/clouddrove-sandbox/enigma)!  if our work has brightened your day! – your feedback fuels our journey!
+Show some love with a ★ on [our GitHub](https://github.com/clouddrove/enigma)!  if our work has brightened your day! – your feedback fuels our journey!
 
 ## :rocket: Our Accomplishment
 
