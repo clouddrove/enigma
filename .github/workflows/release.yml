@@ -5,6 +5,8 @@ on:
 env:
   GO_VERSION: 1.23
   REPO: ${{ github.repository }}
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build:
@@ -127,5 +129,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ github.ref_name }}
+          # labels: ${{ steps.meta.outputs.labels }}
