@@ -119,13 +119,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Image
-        run: make image IMAGE=ghcr.io/${{env.REPO}}:${{ github.ref_name }}
+        run: make image IMAGE=ghcr.io/${{env.REPO}}:latest
 
       - name: Tag latest
-        run: docker tag ghcr.io/${{env.REPO}}:${{ github.ref_name }} ghcr.io/${{ github.repository_owner }}/my-app:latest
+        run: docker tag ghcr.io/${{env.REPO}}:$latest ghcr.io/${{ github.repository_owner }}/my-app:latest
 
-      - name: Push
-        run: docker push ghcr.io/${{env.REPO}}:${{ github.ref_name }}
+      # - name: Push
+      #   run: docker push ghcr.io/${{env.REPO}}:${{ github.ref_name }}
 
       - name: Push Latest
         run: docker push ghcr.io/${{ github.repository_owner }}/my-app:latest
