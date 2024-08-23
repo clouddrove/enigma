@@ -97,9 +97,9 @@ jobs:
   #       body_path: ./CHANGELOG.md
   #       draft: false
 
-  # docker-build:
-  #   runs-on: ubuntu-latest
-  #   name: Build the docker image
+  docker-build:
+    runs-on: ubuntu-latest
+    name: Build the docker image
   #   steps:
 
   #     - name: Checkout
