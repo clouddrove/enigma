@@ -1,7 +1,7 @@
 name: Release
 on:
   push:
-    tags: [ v* ]
+    # tags: [ v* ]
 env:
   GO_VERSION: 1.23
   REPO: ${{ github.repository }}
@@ -9,138 +9,175 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-    strategy:
-      matrix:
-        GOOS: [linux, darwin, windows]
-        GOARCH: [amd64, arm64]
-        include:
-          - GOOS: windows
-            ext: .exe
-    steps:
-    - uses: actions/checkout@v4
+  # build:
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     packages: write
+  #     attestations: write
+  #     id-token: write
+  #   strategy:
+  #     matrix:
+  #       GOOS: [linux, darwin, windows]
+  #       GOARCH: [amd64, arm64]
+  #       include:
+  #         - GOOS: windows
+  #           ext: .exe
+  #   steps:
+  #   - uses: actions/checkout@v4
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: ${{ env.GO_VERSION }}
+  #   - name: Set up Go
+  #     uses: actions/setup-go@v5
+  #     with:
+  #       go-version: ${{ env.GO_VERSION }}
 
-    - name: Repo Name
-      id: repo-name
-      run: echo name=$(basename ${{ github.repository }}) >> $GITHUB_OUTPUT
+  #   - name: Repo Name
+  #     id: repo-name
+  #     run: echo name=$(basename ${{ github.repository }}) >> $GITHUB_OUTPUT
 
-    - name: Test
-      run: go test -v ./...
+  #   - name: Test
+  #     run: go test -v ./...
 
-    - name: Build
-      run: make package PROGRAM=${{ env.GOOS }}-${{ env.GOARCH }}/${{ steps.repo-name.outputs.name }}${{ matrix.ext }} PACKAGE=dist/${{ steps.repo-name.outputs.name }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}.zip
-      env:
-        GOOS: ${{ matrix.GOOS }}
-        GOARCH: ${{ matrix.GOARCH }}
+  #   - name: Build
+  #     run: make package PROGRAM=${{ env.GOOS }}-${{ env.GOARCH }}/${{ steps.repo-name.outputs.name }}${{ matrix.ext }} PACKAGE=dist/${{ steps.repo-name.outputs.name }}-${{ matrix.GOOS }}-${{ matrix.GOARCH }}.zip
+  #     env:
+  #       GOOS: ${{ matrix.GOOS }}
+  #       GOARCH: ${{ matrix.GOARCH }}
 
-    - name: 'Upload Artifact'
-      uses: actions/upload-artifact@v4
-      with:
-        name: artifacts-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
-        path: dist
-        retention-days: 1
-        if-no-files-found: error
+  #   - name: 'Upload Artifact'
+  #     uses: actions/upload-artifact@v4
+  #     with:
+  #       name: artifacts-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
+  #       path: dist
+  #       retention-days: 1
+  #       if-no-files-found: error
 
-  release:
-    runs-on: ubuntu-latest
-    needs:
-      - build
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+  # release:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - build
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #     with:
+  #       fetch-depth: 0
 
-    - name: Download Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        path: artifacts
-        pattern: artifacts-*
-        merge-multiple: true
+  #   - name: Download Artifacts
+  #     uses: actions/download-artifact@v4
+  #     with:
+  #       path: artifacts
+  #       pattern: artifacts-*
+  #       merge-multiple: true
 
-    - name: Install ChangeLog generator
-      run: |
-        wget https://github.com/git-chglog/git-chglog/releases/download/v0.15.1/git-chglog_0.15.1_linux_amd64.tar.gz
-        tar xzf git-chglog*.tar.gz git-chglog
-    - name: "Get Last Release"
-      id: last_release
-      uses: InsonusK/get-latest-release@v1.1.0
-      with:
-        myToken: ${{ github.token }}
-        exclude_types: "draft|prerelease"
+  #   - name: Install ChangeLog generator
+  #     run: |
+  #       wget https://github.com/git-chglog/git-chglog/releases/download/v0.15.1/git-chglog_0.15.1_linux_amd64.tar.gz
+  #       tar xzf git-chglog*.tar.gz git-chglog
+  #   - name: "Get Last Release"
+  #     id: last_release
+  #     uses: InsonusK/get-latest-release@v1.1.0
+  #     with:
+  #       myToken: ${{ github.token }}
+  #       exclude_types: "draft|prerelease"
 
-    - name: Generate Changelog for ${{ github.ref_name }}
-      id: generate-changelog
-      run: PATH="${PATH}:." make CHANGELOG.md
+  #   - name: Generate Changelog for ${{ github.ref_name }}
+  #     id: generate-changelog
+  #     run: PATH="${PATH}:." make CHANGELOG.md
 
-    - name: Generate checksum
-      run: |
-        cd artifacts
-        for file in *; do shasum -a 256 "$file" >> checksum.txt; done
+  #   - name: Generate checksum
+  #     run: |
+  #       cd artifacts
+  #       for file in *; do shasum -a 256 "$file" >> checksum.txt; done
     
-    - name: Create Release
-      id: create_release
-      uses: softprops/action-gh-release@v2
-      with:
-        files: |
-          ./artifacts/*
-        body_path: ./CHANGELOG.md
-        draft: false
+  #   - name: Create Release
+  #     id: create_release
+  #     uses: softprops/action-gh-release@v2
+  #     with:
+  #       files: |
+  #         ./artifacts/*
+  #       body_path: ./CHANGELOG.md
+  #       draft: false
 
-  docker-build:
-    runs-on: ubuntu-latest
-    name: Build the docker image
+  # docker-build:
+  #   runs-on: ubuntu-latest
+  #   name: Build the docker image
+  #   steps:
+
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     # - name: Login to GitHub Container Registry
+  #     #   uses: docker/login-action@v3
+  #     #   with:
+  #     #     registry: ghcr.io
+  #     #     username: ${{ github.repository_owner }}
+  #     #     password: ${{ secrets.GITHUB }}
+
+  #     - name: Login to GitHub Container Registry
+  #       uses: docker/login-action@v3
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB }}
+
+  #     - name: Extract metadata (tags, labels) for Docker
+  #       id: meta
+  #       uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+  #       with:
+  #         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+  #     - name: Build Image
+  #       run: make image IMAGE=ghcr.io/{{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+  #     # - name: Tag latest
+  #     #   run: docker tag ghcr.io/${{env.REPO}}:${{ github.ref_name }} ghcr.io/${{env.REPO}}:latest
+
+  #     - name: Push
+  #       run: docker push ghcr.io/{{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+  #     # - name: Push Latest
+  #     #   run: docker push ghcr.io/${{env.REPO}}:latest
+
+  #     # - name: Build and push Docker image
+  #     #   id: push
+  #     #   uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+  #     #   with:
+  #     #     context: .
+  #     #     push: true
+  #     #     tags: ${{ github.ref_name }}
+  #     #     # labels: ${{ steps.meta.outputs.labels }}
+
+
     steps:
-
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-      # - name: Login to GitHub Container Registry
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: ghcr.io
-      #     username: ${{ github.repository_owner }}
-      #     password: ${{ secrets.GITHUB }}
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+      # Uses the `docker/login-action` action to log in to the Container registry registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB }}
-
+      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      - name: Build Image
-        run: make image IMAGE=ghcr.io/{{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      # - name: Tag latest
-      #   run: docker tag ghcr.io/${{env.REPO}}:${{ github.ref_name }} ghcr.io/${{env.REPO}}:latest
-
-      - name: Push
-        run: docker push ghcr.io/{{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      # - name: Push Latest
-      #   run: docker push ghcr.io/${{env.REPO}}:latest
-
-      # - name: Build and push Docker image
-      #   id: push
-      #   uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+      # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
+      # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see "[Usage](https://github.com/docker/build-push-action#usage)" in the README of the `docker/build-push-action` repository.
+      # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      
+      # # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)." 
+      # - name: Generate artifact attestation
+      #   uses: actions/attest-build-provenance@v1
       #   with:
-      #     context: .
-      #     push: true
-      #     tags: ${{ github.ref_name }}
-      #     # labels: ${{ steps.meta.outputs.labels }}
+      #     subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+      #     subject-digest: ${{ steps.push.outputs.digest }}
+      #     push-to-registry: true
