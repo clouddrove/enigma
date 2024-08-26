@@ -3,7 +3,14 @@
 1. Clone the repository
 `git clone https://github.com/clouddrove/enigma.git`
 
-2. Set your values in `.enigma` file which is in `modules/docker`
+2. Set your values in `.enigma` file. To set values in `.enigma` just pass the values. This is an sample-
+```
+DOCKER_IMAGE=clouddrove
+DOCKER_TAG=v1
+CONTAINER_NAME=clouddrove-container
+HOST_PORT=80
+CONTAINER_PORT=8080
+```
 
 3. Add Dockerfile of your in root of the folder
 
