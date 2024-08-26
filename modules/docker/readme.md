@@ -27,7 +27,7 @@ go build -o enigma main.go
   ```
   ./enigma bake
   ```
-
+ 
 - To Push Image to DockerHub and cleanup Image at end(Cleanup will be only done if in `.enigma` CLEANUP is set   true or by default it will take true):
   ```
   ./enigma publish
