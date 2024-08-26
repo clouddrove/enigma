@@ -6,10 +6,9 @@
 2. Set your values in `.enigma` file. To set values in `.enigma` just pass the values. This is an sample-
 ```
 DOCKER_IMAGE=test
-DOCKER_TAG=v6
-HOST_PORT=80
-DOCKERHUB_USERNAME=shivamkumar28dec
-DOCKERHUB_REPO=enigma
+DOCKER_TAG=v1
+DOCKERHUB_USERNAME=myusername
+DOCKERHUB_REPO=myrepo
 CLEANUP=true
 ```
 
@@ -28,7 +27,7 @@ go build -o enigma main.go
   ./enigma bake
   ```
  
-- To Push Image to DockerHub and cleanup Image at end(Cleanup will be only done if in `.enigma` CLEANUP is set   true or by default it will take true):
+- To Push Image to Registry and cleanup Image at end(Cleanup will be only done if in `.enigma` CLEANUP is set   true or by default it will take true):
   ```
   ./enigma publish
   ```
