@@ -28,89 +28,6 @@ func BuildDockerImage() {
 	fmt.Println("Build and Tag complete.")
 }
 
-// RunDockerContainer runs a Docker container from a specified image.
-// It uses the `docker run` command with options to run in detached mode and map ports.
-func RunDockerContainer() {
-	dockerImage := os.Getenv("DOCKER_IMAGE")
-	dockerTag := os.Getenv("DOCKER_TAG")
-	dockerImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
-	containerName := os.Getenv("CONTAINER_NAME")
-	hostPort := os.Getenv("HOST_PORT")
-	containerPort := os.Getenv("CONTAINER_PORT")
-
-	cmd := exec.Command("docker", "run", "-d", "-p", fmt.Sprintf("%s:%s", hostPort, containerPort), "--name", containerName, dockerImageName)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Println("Running Docker container from image:", dockerImageName)
-
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalf("Error running docker container: %v", err)
-	}
-
-	fmt.Println("Container is running.")
-}
-
-// StopDockerContainer stops a running Docker container.
-// It uses the `docker stop` command to stop the container by name.
-func StopDockerContainer() {
-	containerName := os.Getenv("CONTAINER_NAME")
-
-	cmd := exec.Command("docker", "stop", containerName)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Println("Stopping Docker container:", containerName)
-
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalf("Error stopping docker container: %v", err)
-	}
-
-	fmt.Println("Container stopped.")
-}
-
-// RemoveDockerContainer removes a stopped Docker container.
-// It uses the `docker rm` command to delete the container by name.
-func RemoveDockerContainer() {
-	containerName := os.Getenv("CONTAINER_NAME")
-
-	cmd := exec.Command("docker", "rm", containerName)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Println("Removing Docker container:", containerName)
-
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalf("Error removing docker container: %v", err)
-	}
-
-	fmt.Println("Container removed.")
-}
-
-// RemoveDockerImage removes a Docker image.
-// It uses the `docker rmi` command to delete the image by name and tag.
-func RemoveDockerImage() {
-	dockerImage := os.Getenv("DOCKER_IMAGE")
-	dockerTag := os.Getenv("DOCKER_TAG")
-	dockerImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
-
-	cmd := exec.Command("docker", "rmi", dockerImageName)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Println("Removing Docker image:", dockerImageName)
-
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalf("Error removing docker image: %v", err)
-	}
-
-	fmt.Println("Image removed.")
-}
-
 // ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
 // It uses the `docker scout` command to scan the image for vulnerabilities.
 func ScanDockerImage() {
@@ -132,5 +49,80 @@ func ScanDockerImage() {
 	}
 
 	fmt.Printf("Scan complete. Report saved to %s\n", sarifFile)
-	
+}
+
+// TagDockerImage tags a Docker image with a new tag for Docker Hub.
+// It uses the `docker tag` command to apply the new tag to the image.
+func TagDockerImage() {
+    dockerImage := os.Getenv("DOCKER_IMAGE")
+    dockerTag := os.Getenv("DOCKER_TAG")
+    dockerHubUsername := os.Getenv("DOCKERHUB_USERNAME")
+    dockerHubRepo := os.Getenv("DOCKERHUB_REPO")
+    
+    sourceImage := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
+    targetImage := fmt.Sprintf("%s/%s:%s", dockerHubUsername, dockerHubRepo, dockerTag)
+
+    cmdTag := exec.Command("docker", "tag", sourceImage, targetImage)
+    cmdTag.Stdout = os.Stdout
+    cmdTag.Stderr = os.Stderr
+
+    fmt.Printf("Tagging Docker image: docker tag %s %s\n", sourceImage, targetImage)
+
+    err := cmdTag.Run()
+    if err != nil {
+        log.Fatalf("Error tagging docker image: %v", err)
+    }
+
+    fmt.Println("Docker image tagged successfully.")
+}
+
+// PushDockerImage pushes the tagged Docker image to Docker Hub and optionally cleans up local images.
+// It uses the `docker push` command to upload the image to the specified Docker Hub repository.
+// Cleanup is performed by default or when explicitly set to "true". It's only disabled when set to "false".
+func PushDockerImage() {
+    dockerImage := os.Getenv("DOCKER_IMAGE")
+    dockerTag := os.Getenv("DOCKER_TAG")
+    dockerHubUsername := os.Getenv("DOCKERHUB_USERNAME")
+    dockerHubRepo := os.Getenv("DOCKERHUB_REPO")
+    cleanup := os.Getenv("CLEANUP")
+
+    localImage := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
+    dockerHubImage := fmt.Sprintf("%s/%s:%s", dockerHubUsername, dockerHubRepo, dockerTag)
+
+    cmdPush := exec.Command("docker", "push", dockerHubImage)
+    cmdPush.Stdout = os.Stdout
+    cmdPush.Stderr = os.Stderr
+
+    fmt.Printf("Pushing Docker image to Docker Hub: docker push %s\n", dockerHubImage)
+
+    err := cmdPush.Run()
+    if err != nil {
+        log.Fatalf("Error pushing docker image: %v", err)
+    }
+
+    fmt.Println("Docker image successfully pushed to Docker Hub.")
+
+    if cleanup != "false" {
+        fmt.Println("Cleanup is enabled. Removing local images.")
+
+        cmdRmHub := exec.Command("docker", "rmi", dockerHubImage)
+        cmdRmHub.Stdout = os.Stdout
+        cmdRmHub.Stderr = os.Stderr
+        fmt.Printf("Removing Docker Hub tagged image: docker rmi %s\n", dockerHubImage)
+        if err := cmdRmHub.Run(); err != nil {
+            log.Printf("Error removing Docker Hub tagged image: %v", err)
+        }
+
+        cmdRmLocal := exec.Command("docker", "rmi", localImage)
+        cmdRmLocal.Stdout = os.Stdout
+        cmdRmLocal.Stderr = os.Stderr
+        fmt.Printf("Removing originally built image: docker rmi %s\n", localImage)
+        if err := cmdRmLocal.Run(); err != nil {
+            log.Printf("Error removing originally built image: %v", err)
+        }
+
+        fmt.Println("Cleanup complete.")
+    } else {
+        fmt.Println("Cleanup is disabled. Local images will not be removed.")
+    }
 }
