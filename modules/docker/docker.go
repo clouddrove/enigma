@@ -25,7 +25,7 @@ func BuildDockerImage() {
 		log.Fatalf("Error running docker build: %v", err)
 	}
 
-	fmt.Println("Build complete.")
+	fmt.Println("Build and Tag complete.")
 }
 
 // RunDockerContainer runs a Docker container from a specified image.
@@ -132,26 +132,4 @@ func ScanDockerImage() {
 	}
 
 	fmt.Printf("Scan complete. Report saved to %s\n", sarifFile)
-}
-
-
-// TagDockerImage tags the Docker image with the same tag.
-// It uses the `docker tag` command to tag the image with a specified tag.
-func TagDockerImage() {
-	dockerImage := os.Getenv("DOCKER_IMAGE")
-	dockerTag := os.Getenv("DOCKER_TAG")
-	dockerImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
-
-	cmd := exec.Command("docker", "tag", dockerImageName, dockerImageName)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Println("Tagging Docker image:", dockerImageName, "as", dockerImageName)
-
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalf("Error tagging docker image: %v", err)
-	}
-
-	fmt.Println("Tagging complete.")
 }

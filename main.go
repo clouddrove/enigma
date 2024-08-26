@@ -21,7 +21,7 @@ func loadDockerEnv() {
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: enigma <command>")
-		fmt.Println("Commands: docker/build, docker/run, docker/stop, docker/remove, docker/remove-image, bake")
+		fmt.Println("Commands: docker/run, docker/stop, docker/remove, docker/remove-image, bake")
 		os.Exit(1)
 	}
 
@@ -44,7 +44,7 @@ func main() {
 		loadDockerEnv()
 		docker.BuildDockerImage()
 		docker.ScanDockerImage()
-		docker.TagDockerImage()
+		
 	default:
 		fmt.Println("Unknown command:", command)
 		fmt.Println("Commands: docker/run, docker/stop, docker/remove, docker/remove-image, bake")
