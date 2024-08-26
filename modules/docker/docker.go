@@ -110,3 +110,48 @@ func RemoveDockerImage() {
 
 	fmt.Println("Image removed.")
 }
+
+// ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
+// It uses the `docker scout` command to scan the image for vulnerabilities.
+func ScanDockerImage() {
+	dockerImage := os.Getenv("DOCKER_IMAGE")
+	dockerTag := os.Getenv("DOCKER_TAG")
+	dockerImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
+
+	sarifFile := "sarif.output.json"
+
+	cmd := exec.Command("docker", "scout", "cves", dockerImageName, "--output", sarifFile)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Println("Scanning Docker image:", dockerImageName)
+
+	err := cmd.Run()
+	if err != nil {
+		log.Fatalf("Error running docker scout scan: %v", err)
+	}
+
+	fmt.Printf("Scan complete. Report saved to %s\n", sarifFile)
+}
+
+
+// TagDockerImage tags the Docker image with the same tag.
+// It uses the `docker tag` command to tag the image with a specified tag.
+func TagDockerImage() {
+	dockerImage := os.Getenv("DOCKER_IMAGE")
+	dockerTag := os.Getenv("DOCKER_TAG")
+	dockerImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
+
+	cmd := exec.Command("docker", "tag", dockerImageName, dockerImageName)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Println("Tagging Docker image:", dockerImageName, "as", dockerImageName)
+
+	err := cmd.Run()
+	if err != nil {
+		log.Fatalf("Error tagging docker image: %v", err)
+	}
+
+	fmt.Println("Tagging complete.")
+}

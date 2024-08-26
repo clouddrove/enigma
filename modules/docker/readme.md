@@ -15,6 +15,11 @@ go build -o enigma main.go
 ```
 
 ### To work with Docker commands run-
+- To Build, Scan and Tag:
+  ```
+  ./enigma bake
+  ```
+  
 - To Build Docker Image:
   ```
   ./enigma docker/build
