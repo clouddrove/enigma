@@ -25,7 +25,7 @@ func BuildDockerImage() {
 		log.Fatalf("Error running docker build: %v", err)
 	}
 
-	fmt.Println("Build complete.")
+	fmt.Println("Build and Tag complete.")
 }
 
 // RunDockerContainer runs a Docker container from a specified image.
@@ -109,4 +109,28 @@ func RemoveDockerImage() {
 	}
 
 	fmt.Println("Image removed.")
+}
+
+// ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
+// It uses the `docker scout` command to scan the image for vulnerabilities.
+func ScanDockerImage() {
+	dockerImage := os.Getenv("DOCKER_IMAGE")
+	dockerTag := os.Getenv("DOCKER_TAG")
+	dockerImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
+
+	sarifFile := "sarif.output.json"
+
+	cmd := exec.Command("docker", "scout", "cves", dockerImageName, "--output", sarifFile)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Println("Scanning Docker image:", dockerImageName)
+
+	err := cmd.Run()
+	if err != nil {
+		log.Fatalf("Error running docker scout scan: %v", err)
+	}
+
+	fmt.Printf("Scan complete. Report saved to %s\n", sarifFile)
+	
 }
