@@ -133,3 +133,35 @@ func ScanDockerImage() {
 
 	fmt.Printf("Scan complete. Report saved to %s\n", sarifFile)
 }
+
+func PushDockerImage() {
+	dockerImage := os.Getenv("DOCKER_IMAGE")
+	dockerTag := os.Getenv("DOCKER_TAG")
+	dockerImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
+	dockerHubRepo := os.Getenv("DOCKERHUB_REPO")
+	dockerHubTag := fmt.Sprintf("%s:%s", dockerHubRepo, dockerTag)
+
+	cmdTag := exec.Command("docker", "tag", dockerImageName, dockerHubTag)
+	cmdTag.Stdout = os.Stdout
+	cmdTag.Stderr = os.Stderr
+
+	fmt.Println("Tagging Docker image:", dockerImageName, "as", dockerHubTag)
+
+	err := cmdTag.Run()
+	if err != nil {
+		log.Fatalf("Error tagging docker image: %v", err)
+	}
+
+	cmdPush := exec.Command("docker", "push", dockerHubTag)
+	cmdPush.Stdout = os.Stdout
+	cmdPush.Stderr = os.Stderr
+
+	fmt.Println("Pushing Docker image to Docker Hub:", dockerHubTag)
+
+	err = cmdPush.Run()
+	if err != nil {
+		log.Fatalf("Error pushing docker image: %v", err)
+	}
+
+	fmt.Println("Docker image pushed to Docker Hub:", dockerHubTag)
+}
