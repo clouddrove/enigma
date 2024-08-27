@@ -14,6 +14,15 @@ inputs:
     description: 'Cleanup after push (true or false)'
     required: false
     default: 'true'
+  AWS_ACCESS_KEY_ID:
+    description: 'AWS Access Key ID'
+    required: true
+  AWS_SECRET_ACCESS_KEY:
+    description: 'AWS Secret Access Key'
+    required: true
+  AWS_REGION:
+    description: 'AWS Region'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
