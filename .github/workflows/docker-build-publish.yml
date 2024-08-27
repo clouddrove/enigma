@@ -16,17 +16,17 @@ jobs:
           fetch-depth: 0
 
       - name: Build and Scan Docker Image
-        uses: ./  # This refers to the custom action in the root directory
+        uses: ./
         with:
           command: bake
-          docker_image: hello-custom-workflow
-          docker_tag: shivamkumar28dec/enigma:v0
-          cleanup: true
+          DOCKER_IMAGE: hello-custom-workflow
+          DOCKER_TAG environment: shivamkumar28dec/enigma:v0
+          CLEANUP: true
 
       - name: Publish Docker Image
         uses: ./
         with:
           command: publish
-          docker_image: hello-custom-workflow
-          docker_tag: shivamkumar28dec/enigma:v0
-          cleanup: true
+          DOCKER_IMAGE: hello-custom-workflow
+          DOCKER_TAG: shivamkumar28dec/enigma:v0
+          CLEANUP: true

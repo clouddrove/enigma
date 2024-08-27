@@ -21,6 +21,6 @@ runs:
   image: 'Dockerfile'
   args:
     - ${{ inputs.command }}
-    - ${{ inputs.docker_image }}
-    - ${{ inputs.docker_tag }}
-    - ${{ inputs.cleanup }}
+    - ${{ inputs.DOCKER_IMAGE }}
+    - ${{ inputs.DOCKER_TAG }}
+    - ${{ inputs.CLEANUP }}
