@@ -1,20 +1,9 @@
-ARG GO_VERSION=1.23
-FROM golang:${GO_VERSION} as builder
-ARG PROGRAM=nothing
-ARG VERSION=development
+FROM golang:1.20
 
-RUN mkdir /src /output
-
-WORKDIR /src
+WORKDIR /go/src/app
 
 COPY . .
-RUN GOBIN=/output make install VERSION=$VERSION
-RUN PROGRAM=$(ls /output); echo "#!/bin/sh\nexec '/usr/bin/$PROGRAM' \"\$@\"" > /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
 
+RUN go build -o enigma main.go
 
-FROM gcr.io/distroless/base:latest
-ARG PROGRAM=nothing
-
-COPY --from=builder /output/${PROGRAM} /
-USER 1000
-ENTRYPOINT [""]
+ENTRYPOINT ["/go/src/app/enigma"]

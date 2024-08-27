@@ -1,0 +1,25 @@
+name: 'Enigma Docker Build and Publish'
+description: 'Builds, scans, tags, and pushes Docker images using the Enigma tool'
+inputs:
+  command:
+    description: 'Command to run (bake or publish)'
+    required: true
+  docker_image:
+    description: 'Docker image name'
+    required: true
+  docker_tag:
+    description: 'Docker image tag'
+    required: true
+  cleanup:
+    description: 'Cleanup after push (true or false)'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.command }}
+    - ${{ inputs.docker_image }}
+    - ${{ inputs.docker_tag }}
+    - ${{ inputs.cleanup }}

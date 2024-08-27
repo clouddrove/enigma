@@ -1,0 +1,30 @@
+name: Docker Build and Publish
+on:
+  push:
+    branches:
+      - feat/github-action
+  workflow_dispatch:
+
+jobs:
+  docker-build-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Build and Scan Docker Image
+        uses: clouddrove/enigma@feat/github-action
+        with:
+          command: bake
+          docker_image: hello-custom-workflow
+          docker_tag: shivamkumar28dec/enigma:v0
+
+      - name: Publish Docker Image
+        uses: clouddrove/enigma@feat/github-action
+        with:
+          command: publish
+          docker_image: hello-custom-workflow
+          docker_tag: shivamkumar28dec/enigma:v0
+          cleanup: 'true'
