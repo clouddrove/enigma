@@ -37,22 +37,24 @@ func BuildDockerImage() {
 // ScanDockerImage performs a security scan of the Docker image and saves the report.
 // It adjusts the scan command based on the environment (local or CI/CD workflow).
 func ScanDockerImage() {
+    scan := os.Getenv("SCAN")
+    if scan != "true" {
+        fmt.Println("Scan operation skipped. SCAN is not set to true.")
+        return
+    }
+
     dockerTag := os.Getenv("DOCKER_TAG")
     sarifFile := "sarif.output.json"
 
     if dockerTag == "" {
         log.Fatalf("DOCKER_TAG environment variable is not set")
     }
-
-    // Determine if running in a CI/CD environment
     ciEnvironment := os.Getenv("CI")
 
     var cmd *exec.Cmd
     if ciEnvironment == "" {
-        // Local environment: include --output flag
         cmd = exec.Command("docker", "scout", "cves", dockerTag, "--output", sarifFile)
     } else {
-        // CI/CD environment: exclude --output flag
         cmd = exec.Command("docker", "scout", "cves", dockerTag)
     }
 
@@ -72,7 +74,6 @@ func ScanDockerImage() {
         fmt.Println("Scan complete. SARIF report generation skipped in CI/CD environment.")
     }
 }
-
 
 // TagDockerImage tags the built Docker image for the specified registry.
 // It uses the `docker tag` command to apply the new tag to the image.
