@@ -14,7 +14,6 @@ inputs:
     description: 'Cleanup after push (true or false)'
     required: false
     default: 'true'
-
 runs:
   using: 'docker'
   image: 'Dockerfile'
