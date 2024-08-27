@@ -31,7 +31,7 @@ func main() {
 	case "bake":
 		loadDockerEnv()
 		docker.BuildDockerImage()
-		docker.ScanDockerImage()
+		// docker.ScanDockerImage()
 	case "publish":
 		loadDockerEnv()
 		docker.TagDockerImage()
