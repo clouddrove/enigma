@@ -1,5 +1,6 @@
 name: 'Enigma Docker Build and Publish'
 description: 'Builds, scans, tags, and pushes Docker images using the Enigma tool'
+
 inputs:
   command:
     description: 'Command to run (bake or publish)'
@@ -17,7 +18,7 @@ inputs:
 
 runs:
   using: 'docker'
-  image: 'your-docker-image:latest'
+  image: 'Dockerfile'
   args:
     - ${{ inputs.command }}
     - ${{ inputs.docker_image }}

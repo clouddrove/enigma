@@ -1,4 +1,5 @@
 name: Docker Build and Publish
+
 on:
   push:
     branches:
@@ -15,16 +16,17 @@ jobs:
           fetch-depth: 0
 
       - name: Build and Scan Docker Image
-        uses: clouddrove/enigma@feat/github-action
+        uses: ./  # This refers to the custom action in the root directory
         with:
           command: bake
           docker_image: hello-custom-workflow
           docker_tag: shivamkumar28dec/enigma:v0
+          cleanup: true
 
       - name: Publish Docker Image
-        uses: clouddrove/enigma@feat/github-action
+        uses: ./
         with:
           command: publish
           docker_image: hello-custom-workflow
           docker_tag: shivamkumar28dec/enigma:v0
-          cleanup: 'true'
+          cleanup: true
