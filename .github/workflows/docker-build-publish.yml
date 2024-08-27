@@ -20,7 +20,7 @@ jobs:
         with:
           command: bake
           DOCKER_IMAGE: hello-custom-workflow
-          DOCKER_TAG environment: shivamkumar28dec/enigma:v0
+          DOCKER_TAG: shivamkumar28dec/enigma:v0
           CLEANUP: true
 
       - name: Publish Docker Image
