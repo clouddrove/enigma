@@ -43,9 +43,9 @@ func ScanDockerImage() {
         log.Fatalf("DOCKER_TAG environment variable is not set")
     }
 
-    sarifFile := "sarif.output.json"
+    // sarifFile := "sarif.output.json"
 
-    cmd := exec.Command("docker", "scout", "cves", dockerTag, "--output", sarifFile)
+    cmd := exec.Command("docker", "scout", "cves", dockerTag)
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
 
@@ -55,8 +55,7 @@ func ScanDockerImage() {
     if err != nil {
         log.Fatalf("Error running docker scout scan: %v", err)
     }
-
-    fmt.Printf("Scan complete. Report saved to %s\n", sarifFile)
+    
 }
 
 // TagDockerImage tags the built Docker image for the specified registry.
