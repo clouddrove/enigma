@@ -18,8 +18,9 @@ inputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  env:
+    DOCKER_IMAGE: ${{ inputs.docker_image }}
+    DOCKER_TAG: ${{ inputs.docker_tag }}
   args:
     - ${{ inputs.command }}
-    - ${{ inputs.docker_image }}
-    - ${{ inputs.docker_tag }}
     - ${{ inputs.cleanup }}
