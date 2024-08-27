@@ -20,7 +20,7 @@ go build -o enigma main.go
 ```
 
 ### To work with Docker commands run-
-- To Build, Scan and Tag:
+- To Build and Tag:
   ```
   ./enigma bake
   ```
