@@ -6,7 +6,9 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     curl \
     gnupg \
-    lsb-release
+    lsb-release \
+    python3 \
+    python3-pip
 
 # Add Docker's official GPG key
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
@@ -18,6 +20,10 @@ RUN echo \
 
 # Install Docker CE CLI
 RUN apt-get update && apt-get install -y docker-ce-cli
+
+# Install AWS CLI
+RUN pip3 install --upgrade pip && \
+    pip3 install awscli
 
 WORKDIR /go/src/app
 COPY . .
