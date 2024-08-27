@@ -23,7 +23,7 @@ jobs:
           command: bake
           DOCKER_IMAGE: hello-custom-workflow
           DOCKER_TAG: shivamkumar28dec/enigma:v0
-          CLEANUP: 'true'
+          CLEANUP: 'false'
         env:
           DOCKER_HOST: unix:///var/run/docker.sock
 
@@ -33,6 +33,6 @@ jobs:
           command: publish
           DOCKER_IMAGE: hello-custom-workflow
           DOCKER_TAG: shivamkumar28dec/enigma:v0
-          CLEANUP: 'true'
+          CLEANUP: 'false'
         env:
           DOCKER_HOST: unix:///var/run/docker.sock
