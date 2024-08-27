@@ -1,5 +1,4 @@
 name: Docker Build and Publish
-
 on:
   push:
     branches:
@@ -21,7 +20,7 @@ jobs:
           command: bake
           DOCKER_IMAGE: hello-custom-workflow
           DOCKER_TAG: shivamkumar28dec/enigma:v0
-          CLEANUP: true
+          CLEANUP: 'true'
 
       - name: Publish Docker Image
         uses: ./
@@ -29,4 +28,4 @@ jobs:
           command: publish
           DOCKER_IMAGE: hello-custom-workflow
           DOCKER_TAG: shivamkumar28dec/enigma:v0
-          CLEANUP: true
+          CLEANUP: 'true'
