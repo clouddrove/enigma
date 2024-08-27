@@ -72,6 +72,8 @@ func TagDockerImage() {
     cmdTag.Stdout = os.Stdout
     cmdTag.Stderr = os.Stderr
 
+    fmt.Printf("Tagging Docker image: %s as %s\n", dockerImage, dockerTag)
+
     err := cmdTag.Run()
     if err != nil {
         log.Fatalf("Error tagging docker image: %v", err)
@@ -95,7 +97,7 @@ func PushDockerImage() {
     cmdPush := exec.Command("docker", "push", dockerTag)
     cmdPush.Stdout = os.Stdout
     cmdPush.Stderr = os.Stderr
-
+    fmt.Printf("Pushing Docker image: docker push %s\n", dockerTag)
     err := cmdPush.Run()
     if err != nil {
         log.Fatalf("Error pushing docker image: %v", err)
@@ -107,6 +109,7 @@ func PushDockerImage() {
         cmdRm := exec.Command("docker", "rmi", dockerTag)
         cmdRm.Stdout = os.Stdout
         cmdRm.Stderr = os.Stderr
+        fmt.Printf("Removing tagged image: docker rmi %s\n", dockerTag)
         if err := cmdRm.Run(); err != nil {
             log.Printf("Error removing tagged image: %v", err)
         }
