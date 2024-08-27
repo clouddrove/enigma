@@ -1,136 +1,121 @@
 package docker
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"os/exec"
+    "fmt"
+    "log"
+    "os"
+    "os/exec"
 )
 
 // BuildDockerImage builds a Docker image based on the environment variables.
 // It uses the `docker build` command to create the image with a specified tag.
 func BuildDockerImage() {
-	dockerImage := os.Getenv("DOCKER_IMAGE")
-	dockerTag := os.Getenv("DOCKER_TAG")
-	dockerImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
+    dockerImage := os.Getenv("DOCKER_IMAGE")
+    dockerTag := os.Getenv("DOCKER_TAG")
 
-	cmd := exec.Command("docker", "build", "-t", dockerImageName, ".")
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+    if dockerImage == "" || dockerTag == "" {
+        log.Fatalf("DOCKER_IMAGE or DOCKER_TAG environment variable is not set")
+    }
 
-	fmt.Println("Building Docker image:", dockerImageName)
+    // Build the image using the base name (e.g., "aws")
+    cmd := exec.Command("docker", "build", "-t", dockerImage, ".")
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
 
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalf("Error running docker build: %v", err)
-	}
+    fmt.Println("Building Docker image:", dockerImage)
 
-	fmt.Println("Build and Tag complete.")
-}
+    err := cmd.Run()
+    if err != nil {
+        log.Fatalf("Error running docker build: %v", err)
+    }
 
-// RunDockerContainer runs a Docker container from a specified image.
-// It uses the `docker run` command with options to run in detached mode and map ports.
-func RunDockerContainer() {
-	dockerImage := os.Getenv("DOCKER_IMAGE")
-	dockerTag := os.Getenv("DOCKER_TAG")
-	dockerImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
-	containerName := os.Getenv("CONTAINER_NAME")
-	hostPort := os.Getenv("HOST_PORT")
-	containerPort := os.Getenv("CONTAINER_PORT")
+    fmt.Println("Build complete.")
 
-	cmd := exec.Command("docker", "run", "-d", "-p", fmt.Sprintf("%s:%s", hostPort, containerPort), "--name", containerName, dockerImageName)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Println("Running Docker container from image:", dockerImageName)
-
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalf("Error running docker container: %v", err)
-	}
-
-	fmt.Println("Container is running.")
-}
-
-// StopDockerContainer stops a running Docker container.
-// It uses the `docker stop` command to stop the container by name.
-func StopDockerContainer() {
-	containerName := os.Getenv("CONTAINER_NAME")
-
-	cmd := exec.Command("docker", "stop", containerName)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Println("Stopping Docker container:", containerName)
-
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalf("Error stopping docker container: %v", err)
-	}
-
-	fmt.Println("Container stopped.")
-}
-
-// RemoveDockerContainer removes a stopped Docker container.
-// It uses the `docker rm` command to delete the container by name.
-func RemoveDockerContainer() {
-	containerName := os.Getenv("CONTAINER_NAME")
-
-	cmd := exec.Command("docker", "rm", containerName)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Println("Removing Docker container:", containerName)
-
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalf("Error removing docker container: %v", err)
-	}
-
-	fmt.Println("Container removed.")
-}
-
-// RemoveDockerImage removes a Docker image.
-// It uses the `docker rmi` command to delete the image by name and tag.
-func RemoveDockerImage() {
-	dockerImage := os.Getenv("DOCKER_IMAGE")
-	dockerTag := os.Getenv("DOCKER_TAG")
-	dockerImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
-
-	cmd := exec.Command("docker", "rmi", dockerImageName)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Println("Removing Docker image:", dockerImageName)
-
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalf("Error removing docker image: %v", err)
-	}
-
-	fmt.Println("Image removed.")
+    TagDockerImage()
 }
 
 // ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
 // It uses the `docker scout` command to scan the image for vulnerabilities.
 func ScanDockerImage() {
-	dockerImage := os.Getenv("DOCKER_IMAGE")
-	dockerTag := os.Getenv("DOCKER_TAG")
-	dockerImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
+    dockerTag := os.Getenv("DOCKER_TAG")
 
-	sarifFile := "sarif.output.json"
+    if dockerTag == "" {
+        log.Fatalf("DOCKER_TAG environment variable is not set")
+    }
 
-	cmd := exec.Command("docker", "scout", "cves", dockerImageName, "--output", sarifFile)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+    sarifFile := "sarif.output.json"
 
-	fmt.Println("Scanning Docker image:", dockerImageName)
+    cmd := exec.Command("docker", "scout", "cves", dockerTag, "--output", sarifFile)
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
 
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalf("Error running docker scout scan: %v", err)
-	}
+    fmt.Println("Scanning Docker image:", dockerTag)
 
-	fmt.Printf("Scan complete. Report saved to %s\n", sarifFile)
-	
+    err := cmd.Run()
+    if err != nil {
+        log.Fatalf("Error running docker scout scan: %v", err)
+    }
+
+    fmt.Printf("Scan complete. Report saved to %s\n", sarifFile)
+}
+
+// TagDockerImage tags the built Docker image for the specified registry.
+// It uses the `docker tag` command to apply the new tag to the image.
+func TagDockerImage() {
+    dockerImage := os.Getenv("DOCKER_IMAGE")
+    dockerTag := os.Getenv("DOCKER_TAG")
+    
+    if dockerImage == "" || dockerTag == "" {
+        log.Fatalf("DOCKER_IMAGE or DOCKER_TAG environment variable is not set")
+    }
+
+    cmdTag := exec.Command("docker", "tag", dockerImage, dockerTag)
+    cmdTag.Stdout = os.Stdout
+    cmdTag.Stderr = os.Stderr
+
+    fmt.Printf("Tagging Docker image: %s as %s\n", dockerImage, dockerTag)
+
+    err := cmdTag.Run()
+    if err != nil {
+        log.Fatalf("Error tagging docker image: %v", err)
+    }
+
+    fmt.Println("Docker image tagged successfully.")
+}
+
+
+// PushDockerImage pushes the tagged Docker image to the specified registry and optionally cleans up local images.
+// It uses the `docker push` command to upload the image to the registry specified in DOCKER_TAG.
+// Cleanup is performed by default or when explicitly set to "true". It's only disabled when set to "false".
+func PushDockerImage() {
+    dockerTag := os.Getenv("DOCKER_TAG")
+    cleanup := os.Getenv("CLEANUP")
+    
+    if dockerTag == "" {
+        log.Fatalf("DOCKER_TAG environment variable is not set")
+    }
+    
+    cmdPush := exec.Command("docker", "push", dockerTag)
+    cmdPush.Stdout = os.Stdout
+    cmdPush.Stderr = os.Stderr
+    fmt.Printf("Pushing Docker image: docker push %s\n", dockerTag)
+    err := cmdPush.Run()
+    if err != nil {
+        log.Fatalf("Error pushing docker image: %v", err)
+    }
+    fmt.Println("Docker image successfully pushed to the specified registry.")
+    
+    if cleanup != "false" {
+        fmt.Println("Cleanup is enabled. Removing tagged image.")
+        cmdRm := exec.Command("docker", "rmi", dockerTag)
+        cmdRm.Stdout = os.Stdout
+        cmdRm.Stderr = os.Stderr
+        fmt.Printf("Removing tagged image: docker rmi %s\n", dockerTag)
+        if err := cmdRm.Run(); err != nil {
+            log.Printf("Error removing tagged image: %v", err)
+        }
+        fmt.Println("Cleanup complete.")
+    } else {
+        fmt.Println("Cleanup is disabled. Tagged image will not be removed.")
+    }
 }

@@ -5,11 +5,9 @@
 
 2. Set your values in `.enigma` file. To set values in `.enigma` just pass the values. This is an sample-
 ```
-DOCKER_IMAGE=clouddrove
-DOCKER_TAG=v1
-CONTAINER_NAME=clouddrove-container
-HOST_PORT=80
-CONTAINER_PORT=8080
+DOCKER_IMAGE=nginx
+DOCKER_TAG=xyz:v1
+CLEANUP=true
 ```
 
 3. Add Dockerfile of your in root of the folder
@@ -26,24 +24,8 @@ go build -o enigma main.go
   ```
   ./enigma bake
   ```
-  
-- To Build Docker Image:
+ 
+- To Push Image to Registry and cleanup Image at end(Cleanup will be only done if in `.enigma` CLEANUP is set true or by default it will take true):
   ```
-  ./enigma docker/build
-  ```
-- To Run Docker Container:
-  ```
-  ./enigma docker/run
-  ```
-- To Stop Docker Container:
-  ```
-  ./enigma docker/stop
-  ```
-- To Remove Docker Container:
-  ```
-  ./enigma docker/remove
-  ```
-- To Remove Docker Image:
-  ```
-  ./enigma docker/remove-image
+  ./enigma publish
   ```
