@@ -1,10 +1,8 @@
 #!/bin/sh
 set -e
 
-# Source the Google Cloud SDK path
-if [ -f "/google-cloud-sdk/path.bash.inc" ]; then
-    . "/google-cloud-sdk/path.bash.inc"
-fi
+# Add Google Cloud SDK to PATH
+export PATH=$PATH:/google-cloud-sdk/bin
 
 # Check if provider is AWS
 if [ "$PROVIDER" = "aws" ]; then
