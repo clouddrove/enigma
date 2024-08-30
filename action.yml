@@ -1,0 +1,34 @@
+name: 'Enigma Docker Build and Publish'
+description: 'Builds, scans, tags, and pushes Docker images using the Enigma tool'
+inputs:
+  command:
+    description: 'Command to run (bake or publish)'
+    required: true
+  DOCKER_IMAGE:
+    description: 'Docker image name'
+    required: true
+  DOCKER_TAG:
+    description: 'Docker image tag'
+    required: true
+  CLEANUP:
+    description: 'Cleanup after push (true or false)'
+    required: false
+    default: 'false'
+  AWS_REGION:
+    description: 'AWS Region'
+    required: true
+  AWS_ACCOUNT_ID:
+    description: 'AWS Account ID'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  env:
+    DOCKER_IMAGE: ${{ inputs.DOCKER_IMAGE }}
+    DOCKER_TAG: ${{ inputs.DOCKER_TAG }}
+    AWS_ACCOUNT_ID: ${{ inputs.AWS_ACCOUNT_ID }}
+    AWS_REGION: ${{ inputs.AWS_REGION }}
+    CLEANUP: ${{ inputs.AWS_REGION }}
+    
+  args:
+    - ${{ inputs.command }}

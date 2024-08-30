@@ -8,7 +8,10 @@
 DOCKER_IMAGE=nginx
 DOCKER_TAG=xyz:v1
 CLEANUP=true
+SCAN=false
 ```
+
+when working on local keep SCAN=true to it scan your image and generate report for it. 
 
 3. Add Dockerfile of your in root of the folder
 
@@ -20,7 +23,7 @@ go build -o enigma main.go
 ```
 
 ### To work with Docker commands run-
-- To Build, Scan and Tag:
+- To Build and Tag:
   ```
   ./enigma bake
   ```
@@ -29,3 +32,37 @@ go build -o enigma main.go
   ```
   ./enigma publish
   ```
+
+## Usage in GitHub Actions
+### This GitHub Action builds docker image, tags and pushes to the registry you want. 
+
+```yaml
+name: Enigma Docker
+
+on:
+  push:
+    branches: main
+
+jobs:
+  login:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Build Docker Image
+        uses: clouddrove/enigma@main
+        with:
+          command: bake
+          DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
+          DOCKER_TAG: ${{ env.DOCKER_TAG }}
+          AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+
+      - name: Publish Docker Image
+        uses: clouddrove/enigma@main
+        with:
+          command: publish
+          DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
+          DOCKER_TAG: ${{ env.DOCKER_TAG }}
+          AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+```

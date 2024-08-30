@@ -31,12 +31,20 @@ func BuildDockerImage() {
 
     fmt.Println("Build complete.")
 
+    fmt.Println("Build complete.")
     TagDockerImage()
 }
 
 // ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
 // It uses the `docker scout` command to scan the image for vulnerabilities.
 func ScanDockerImage() {
+    scan := os.Getenv("SCAN")
+
+    if scan != "true" {
+        fmt.Println("SCAN is not set to true. Skipping Docker image scan.")
+        return
+    }
+
     dockerTag := os.Getenv("DOCKER_TAG")
 
     if dockerTag == "" {
@@ -56,6 +64,7 @@ func ScanDockerImage() {
         log.Fatalf("Error running docker scout scan: %v", err)
     }
 
+    fmt.Println("Docker image scan complete.")
     fmt.Printf("Scan complete. Report saved to %s\n", sarifFile)
 }
 
@@ -82,7 +91,6 @@ func TagDockerImage() {
 
     fmt.Println("Docker image tagged successfully.")
 }
-
 
 // PushDockerImage pushes the tagged Docker image to the specified registry and optionally cleans up local images.
 // It uses the `docker push` command to upload the image to the registry specified in DOCKER_TAG.

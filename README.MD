@@ -28,7 +28,7 @@
 This repo offers to Work effortlessly with Docker, Helm, Docker Compose, Terraform, and other essential DevOps tools. It streamlines your workflow by automating complex commands and managing configurations. Simply set your environment variables, and let Enigma handle rest. With its intuitive design and powerful automation, you’ll achieve greater efficiency and consistency in your DevOps processes.
 
 ## 🚀 Table Of Content
-1. [Docker](https://github.com/clouddrove/enigma/blob/master/modules/docker/README.md)   
+1. [Docker](https://github.com/clouddrove/enigma/blob/main/modules/docker/readme.md)   
 
 ## ✨ Contributors
 
