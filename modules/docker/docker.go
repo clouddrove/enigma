@@ -31,6 +31,7 @@ func BuildDockerImage() {
 
     fmt.Println("Build complete.")
 
+    fmt.Println("Build complete.")
     TagDockerImage()
 }
 
@@ -90,7 +91,6 @@ func TagDockerImage() {
 
     fmt.Println("Docker image tagged successfully.")
 }
-
 
 // PushDockerImage pushes the tagged Docker image to the specified registry and optionally cleans up local images.
 // It uses the `docker push` command to upload the image to the registry specified in DOCKER_TAG.
