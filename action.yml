@@ -16,10 +16,10 @@ inputs:
     default: 'false'
   AWS_REGION:
     description: 'AWS Region'
-    required: true
+    required: false
   AWS_ACCOUNT_ID:
     description: 'AWS Account ID'
-    required: true
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
