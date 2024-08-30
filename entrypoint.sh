@@ -14,6 +14,6 @@ set -e
 
 # export DOCKER_CONFIG="/github/home/.docker"
 
-aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 924144197303.dkr.ecr.us-east-1.amazonaws.com
+# aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 924144197303.dkr.ecr.us-east-1.amazonaws.com
 
 exec "/go/src/app/enigma" "$@"
