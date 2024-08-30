@@ -1,8 +1,6 @@
 #!/bin/sh
 set -e
 
-# Add Google Cloud SDK to PATH
-export PATH=$PATH:/root/google-cloud-sdk/bin
 # Check if provider is AWS
 if [ "$PROVIDER" = "aws" ]; then
   aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
