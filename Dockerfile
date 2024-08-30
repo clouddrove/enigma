@@ -41,8 +41,6 @@ RUN mkdir -p /usr/local/gcloud \
 
 ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
 
-RUN chmod +x /go/src/app/entrypoint.sh
-
 WORKDIR /go/src/app
 COPY . .
 RUN go build -o enigma main.go
