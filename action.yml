@@ -1,5 +1,6 @@
 name: 'Enigma Docker Build and Publish'
 description: 'Builds, scans, tags, and pushes Docker images using the Enigma tool'
+
 inputs:
   command:
     description: 'Command to run (bake or publish)'
@@ -20,12 +21,22 @@ inputs:
   AWS_ACCOUNT_ID:
     description: 'AWS Account ID'
     required: false
+  GCP_PROJECT_ID:
+    description: 'GCP Project ID'
+    required: false
+  GCP_REGION:
+    description: 'GCP Region'
+    required: false
+  GCLOUD_AUTH:
+    description: 'Google Cloud service account key (JSON)'
+    required: false
   DOCKER_USERNAME:
     description: 'Docker Hub username'
     required: false
   DOCKER_PASSWORD:
     description: 'Docker Hub password'
     required: false
+
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -34,9 +45,12 @@ runs:
     DOCKER_TAG: ${{ inputs.DOCKER_TAG }}
     AWS_ACCOUNT_ID: ${{ inputs.AWS_ACCOUNT_ID }}
     AWS_REGION: ${{ inputs.AWS_REGION }}
-    CLEANUP: ${{ inputs.AWS_REGION }}
+    GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
+    GCP_REGION: ${{ inputs.GCP_REGION }}
+    GCLOUD_AUTH: ${{ inputs.GCLOUD_AUTH }}
+    CLEANUP: ${{ inputs.CLEANUP }}
     DOCKER_USERNAME: ${{ inputs.DOCKER_USERNAME }}
     DOCKER_PASSWORD: ${{ inputs.DOCKER_PASSWORD }}
-    
+
   args:
     - ${{ inputs.command }}
