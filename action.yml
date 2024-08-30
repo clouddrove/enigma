@@ -10,28 +10,32 @@ inputs:
   DOCKER_TAG:
     description: 'Docker image tag'
     required: true
+  # SCAN:
+  #  description: 'Keep false when working with Workflows'
+  #  required: 
   # CLEANUP:
   #   description: 'Cleanup after push (true or false)'
   #   required: false
   #   default: 'true'
-  # AWS_ACCESS_KEY_ID:
-  #   description: 'AWS Access Key ID'
-  #   required: true
-  # AWS_SECRET_ACCESS_KEY:
-  #   description: 'AWS Secret Access Key'
-  #   required: true
-  # AWS_REGION:
-  #   description: 'AWS Region'
-  #   required: true
+  AWS_ACCESS_KEY_ID:
+    description: 'AWS Access Key ID'
+    required: true
+  AWS_SECRET_ACCESS_KEY:
+    description: 'AWS Secret Access Key'
+    required: true
+  AWS_REGION:
+    description: 'AWS Region'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
   env:
     DOCKER_IMAGE: ${{ inputs.DOCKER_IMAGE }}
     DOCKER_TAG: ${{ inputs.DOCKER_TAG }}
+
     # CLEANUP: ${{ inputs.CLEANUP }}
-    # AWS_ACCESS_KEY_ID: ${{ inputs.AWS_ACCESS_KEY_ID }}
-    # AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
-    # AWS_REGION: ${{ inputs.AWS_REGION }}
+    AWS_ACCESS_KEY_ID: ${{ inputs.AWS_ACCESS_KEY_ID }}
+    AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+    AWS_REGION: ${{ inputs.AWS_REGION }}
   args:
     - ${{ inputs.command }}
