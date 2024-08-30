@@ -7,6 +7,9 @@ RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
     lsb-release \
+    bash \
+    python3 \
+    python3-pip \
     unzip
 
 # Add Docker's official GPG key
