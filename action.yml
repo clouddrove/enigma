@@ -21,12 +21,12 @@ inputs:
   AWS_ACCOUNT_ID:
     description: 'AWS Account ID'
     required: false
-  # GCP_PROJECT_ID:
-  #   description: 'GCP Project ID'
-  #   required: false
-  # GCP_REGION:
-  #   description: 'GCP Region'
-  #   required: false
+  GCP_PROJECT_ID:
+    description: 'GCP Project ID'
+    required: false
+  GCP_REGION:
+    description: 'GCP Region'
+    required: false
   DOCKER_USERNAME:
     description: 'Docker Hub username'
     required: false
@@ -48,8 +48,8 @@ runs:
     DOCKER_TAG: ${{ inputs.DOCKER_TAG }}
     AWS_ACCOUNT_ID: ${{ inputs.AWS_ACCOUNT_ID }}
     AWS_REGION: ${{ inputs.AWS_REGION }}
-    # GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
-    # GCP_REGION: ${{ inputs.GCP_REGION }}
+    GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
+    GCP_REGION: ${{ inputs.GCP_REGION }}
     CLEANUP: ${{ inputs.CLEANUP }}
     DOCKER_USERNAME: ${{ inputs.DOCKER_USERNAME }}
     DOCKER_PASSWORD: ${{ inputs.DOCKER_PASSWORD }}
