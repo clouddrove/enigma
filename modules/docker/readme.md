@@ -11,7 +11,7 @@ CLEANUP=true
 SCAN=false
 ```
 
-when SCAN=true it will scan your image and generate a report. Please use this only when working on local
+when working on local keep SCAN=true to it scan your image and generate report for it. 
 
 3. Add Dockerfile of your in root of the folder
 
