@@ -7,7 +7,8 @@ if [ "$PROVIDER" = "aws" ]; then
 
 # Check if provider is GCP
 elif [ "$PROVIDER" = "gcp" ]; then
-  gcloud auth configure-docker "us-central1-docker.pkg.dev" --quiet
+  # gcloud auth configure-docker "us-central1-docker.pkg.dev" --quiet
+  echo "HI"
 
 # Check if provider is Docker Hub
 elif [ "$PROVIDER" = "dockerhub" ]; then
