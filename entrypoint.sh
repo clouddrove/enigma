@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 924144197303.dkr.ecr.us-east-1.amazonaws.com
+# Login to AWS ECR using the provided credentials from environment variables
+aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
 
+# Execute the main application
 exec "/go/src/app/enigma" "$@"
