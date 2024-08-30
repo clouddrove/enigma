@@ -20,6 +20,12 @@ inputs:
   AWS_ACCOUNT_ID:
     description: 'AWS Account ID'
     required: false
+  DOCKER_USERNAME:
+    description: 'Docker Hub username'
+    required: false
+  DOCKER_PASSWORD:
+    description: 'Docker Hub password'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -29,6 +35,8 @@ runs:
     AWS_ACCOUNT_ID: ${{ inputs.AWS_ACCOUNT_ID }}
     AWS_REGION: ${{ inputs.AWS_REGION }}
     CLEANUP: ${{ inputs.AWS_REGION }}
+    DOCKER_USERNAME: ${{ inputs.DOCKER_USERNAME }}
+    DOCKER_PASSWORD: ${{ inputs.DOCKER_PASSWORD }}
     
   args:
     - ${{ inputs.command }}
