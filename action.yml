@@ -27,9 +27,6 @@ inputs:
   GCP_REGION:
     description: 'GCP Region'
     required: false
-  GCLOUD_AUTH:
-    description: 'Google Cloud service account key (JSON)'
-    required: false
   DOCKER_USERNAME:
     description: 'Docker Hub username'
     required: false
@@ -42,9 +39,6 @@ inputs:
   GITHUB_USERNAME: 
     description: 'GitHub Username'
     required: false
-  GCP_SERVICE_ACCOUNT_EMAIL:
-    description: 'Service Account Mail'
-    required: false
 
 runs:
   using: 'docker'
@@ -56,13 +50,11 @@ runs:
     AWS_REGION: ${{ inputs.AWS_REGION }}
     GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
     GCP_REGION: ${{ inputs.GCP_REGION }}
-    GCLOUD_AUTH: ${{ inputs.GCLOUD_AUTH }}
     CLEANUP: ${{ inputs.CLEANUP }}
     DOCKER_USERNAME: ${{ inputs.DOCKER_USERNAME }}
     DOCKER_PASSWORD: ${{ inputs.DOCKER_PASSWORD }}
     TOKEN: ${{ inputs.TOKEN }}
     GITHUB_USERNAME: ${{ inputs. GITHUB_USERNAME }}
-    GCP_SERVICE_ACCOUNT_EMAIL: ${{ inputs.GCP_SERVICE_ACCOUNT_EMAI }}
 
   args:
     - ${{ inputs.command }}
