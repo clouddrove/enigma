@@ -26,14 +26,20 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install && \
     rm -rf aws awscliv2.zip
 
-# Install Google Cloud CLI
-RUN curl -O https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz && \
-    tar -xzf google-cloud-sdk.tar.gz && \
-    ./google-cloud-sdk/install.sh --quiet && \
-    rm google-cloud-sdk.tar.gz
+# # Install Google Cloud CLI
+# RUN curl -O https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz && \
+#     tar -xzf google-cloud-sdk.tar.gz && \
+#     ./google-cloud-sdk/install.sh --quiet && \
+#     rm google-cloud-sdk.tar.gz
+
+RUN apk add --no-cache curl bash python3 py3-pip \
+    && curl -sSL https://sdk.cloud.google.com | bash \
+    && /root/google-cloud-sdk/install.sh \
+    && rm -rf /var/cache/apk/*
 
 # Add Google Cloud SDK to PATH
-ENV PATH $PATH:/google-cloud-sdk/bin
+ENV PATH $PATH:/root/google-cloud-sdk/bin
+RUN chmod +x /go/src/app/entrypoint.sh
 
 WORKDIR /go/src/app
 COPY . .
