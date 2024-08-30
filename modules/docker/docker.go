@@ -34,29 +34,38 @@ func BuildDockerImage() {
     TagDockerImage()
 }
 
-// // ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
-// // It uses the `docker scout` command to scan the image for vulnerabilities.
-// func ScanDockerImage() {
-//     dockerTag := os.Getenv("DOCKER_TAG")
+// ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
+// It uses the `docker scout` command to scan the image for vulnerabilities.
+func ScanDockerImage() {
+    scan := os.Getenv("SCAN")
 
-//     if dockerTag == "" {
-//         log.Fatalf("DOCKER_TAG environment variable is not set")
-//     }
+    if scan != "true" {
+        fmt.Println("SCAN is not set to true. Skipping Docker image scan.")
+        return
+    }
 
-//     // sarifFile := "sarif.output.json"
+    dockerTag := os.Getenv("DOCKER_TAG")
 
-//     cmd := exec.Command("docker", "scout", "cves", dockerTag)
-//     cmd.Stdout = os.Stdout
-//     cmd.Stderr = os.Stderr
+    if dockerTag == "" {
+        log.Fatalf("DOCKER_TAG environment variable is not set")
+    }
 
-//     fmt.Println("Scanning Docker image:", dockerTag)
+    sarifFile := "sarif.output.json"
 
-//     err := cmd.Run()
-//     if err != nil {
-//         log.Fatalf("Error running docker scout scan: %v", err)
-//     }
-    
-// }
+    cmd := exec.Command("docker", "scout", "cves", dockerTag, "--output", sarifFile)
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+
+    fmt.Println("Scanning Docker image:", dockerTag)
+
+    err := cmd.Run()
+    if err != nil {
+        log.Fatalf("Error running docker scout scan: %v", err)
+    }
+
+    fmt.Println("Docker image scan complete.")
+    fmt.Printf("Scan complete. Report saved to %s\n", sarifFile)
+}
 
 // TagDockerImage tags the built Docker image for the specified registry.
 // It uses the `docker tag` command to apply the new tag to the image.

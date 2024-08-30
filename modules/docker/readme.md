@@ -8,7 +8,10 @@
 DOCKER_IMAGE=nginx
 DOCKER_TAG=xyz:v1
 CLEANUP=true
+SCAN=false
 ```
+
+when SCAN=true it will scan your image and generate a report. Please use this only when working on local
 
 3. Add Dockerfile of your in root of the folder
 

@@ -20,11 +20,11 @@ RUN echo \
 # Install Docker CE CLI
 RUN apt-get update && apt-get install -y docker-ce-cli
 
-# Install AWS CLI v2
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip awscliv2.zip && \
-    ./aws/install && \
-    rm -rf aws awscliv2.zip
+# # Install AWS CLI v2
+# RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+#     unzip awscliv2.zip && \
+#     ./aws/install && \
+#     rm -rf aws awscliv2.zip
 
 WORKDIR /go/src/app
 COPY . .
