@@ -14,6 +14,10 @@ elif [ "$PROVIDER" = "gcp" ]; then
 elif [ "$PROVIDER" = "dockerhub" ]; then
   echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
 
+# Check if provider is GitHub Container Registry
+elif [ "$PROVIDER" = "github" ]; then
+  echo "$TOKEN" | docker login ghcr.io -u "$GITHUB_USERNAME" --password-stdin
+
 else
   echo "Please pass a valid provider"
   exit 1
