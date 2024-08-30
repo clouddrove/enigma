@@ -36,6 +36,12 @@ inputs:
   DOCKER_PASSWORD:
     description: 'Docker Hub password'
     required: false
+  TOKEN: 
+    description: 'GitHub Token'
+    required: false
+  GITHUB_USERNAME: 
+    description: 'GitHub Username'
+    required: false
 
 runs:
   using: 'docker'
@@ -51,6 +57,8 @@ runs:
     CLEANUP: ${{ inputs.CLEANUP }}
     DOCKER_USERNAME: ${{ inputs.DOCKER_USERNAME }}
     DOCKER_PASSWORD: ${{ inputs.DOCKER_PASSWORD }}
+    TOKEN: ${{ inputs.TOKEN }}
+    GITHUB_USERNAME: ${{ inputs. GITHUB_USERNAME }}
 
   args:
     - ${{ inputs.command }}
