@@ -26,17 +26,16 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install && \
     rm -rf aws awscliv2.zip
 
-RUN curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-428.0.0-linux-x86_64.tar.gz && \
-    tar -xzf google-cloud-sdk-428.0.0-linux-x86_64.tar.gz && \
+# Install Google Cloud CLI
+RUN curl -O https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz && \
+    tar -xzf google-cloud-sdk.tar.gz && \
     ./google-cloud-sdk/install.sh --quiet && \
-    rm google-cloud-sdk-428.0.0-linux-x86_64.tar.gz
+    rm google-cloud-sdk.tar.gz
 
+# Add Google Cloud SDK to PATH
 ENV PATH $PATH:/google-cloud-sdk/bin
 
 WORKDIR /go/src/app
 COPY . .
 RUN go build -o enigma main.go
-
-RUN chmod +x /go/src/app/entrypoint.sh
-
 ENTRYPOINT ["/go/src/app/entrypoint.sh"]
