@@ -8,8 +8,6 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     lsb-release \
     bash \
-    python3 \
-    python3-pip \
     unzip
 
 # Add Docker's official GPG key
@@ -29,19 +27,20 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install && \
     rm -rf aws awscliv2.zip
 
-# # Install Google Cloud CLI
+# Install Google Cloud CLI
 # RUN curl -O https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz && \
-#     tar -xzf google-cloud-sdk.tar.gz && \
-#     ./google-cloud-sdk/install.sh --quiet && \
-#     rm google-cloud-sdk.tar.gz
+# tar -xzf google-cloud-sdk.tar.gz && \
+# ./google-cloud-sdk/install.sh && \
+# rm google-cloud-sdk.tar.gz
 
-RUN apk add --no-cache curl bash python3 py3-pip \
-    && curl -sSL https://sdk.cloud.google.com | bash \
-    && /root/google-cloud-sdk/install.sh \
-    && rm -rf /var/cache/apk/*
+RUN curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > /tmp/google-cloud-sdk.tar.gz
 
-# Add Google Cloud SDK to PATH
-ENV PATH $PATH:/root/google-cloud-sdk/bin
+RUN mkdir -p /usr/local/gcloud \
+  && tar -C /usr/local/gcloud -xvf /tmp/google-cloud-sdk.tar.gz \
+  && /usr/local/gcloud/google-cloud-sdk/install.sh
+
+ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
+
 RUN chmod +x /go/src/app/entrypoint.sh
 
 WORKDIR /go/src/app
