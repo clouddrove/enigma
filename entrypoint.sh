@@ -6,7 +6,7 @@ if [ "$PROVIDER" = "aws" ]; then
   aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
 # Check if provider is GCP
 elif [ "$PROVIDER" = "gcp" ]; then
-  echo "$GCLOUD_AUTH" | gcloud auth activate-service-account --key-file=-
+  echo "$GCLOUD_AUTH" | gcloud auth activate-service-account --key-file=- --account "$GCP_SERVICE_ACCOUNT_EMAIL"
   gcloud auth configure-docker
 # Check if provider is Docker Hub
 elif [ "$PROVIDER" = "dockerhub" ]; then
