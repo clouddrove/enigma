@@ -27,12 +27,6 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install && \
     rm -rf aws awscliv2.zip
 
-# Install Google Cloud CLI
-# RUN curl -O https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz && \
-# tar -xzf google-cloud-sdk.tar.gz && \
-# ./google-cloud-sdk/install.sh && \
-# rm google-cloud-sdk.tar.gz
-
 RUN curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > /tmp/google-cloud-sdk.tar.gz
 
 RUN mkdir -p /usr/local/gcloud \
