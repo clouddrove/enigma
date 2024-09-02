@@ -39,7 +39,10 @@ inputs:
   GITHUB_USERNAME: 
     description: 'GitHub Username'
     required: false
-
+  AZURE_REGISTRY_NAME:
+    description: 'Azure Registry name'
+    required: false
+  
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -54,7 +57,8 @@ runs:
     DOCKER_USERNAME: ${{ inputs.DOCKER_USERNAME }}
     DOCKER_PASSWORD: ${{ inputs.DOCKER_PASSWORD }}
     TOKEN: ${{ inputs.TOKEN }}
-    GITHUB_USERNAME: ${{ inputs. GITHUB_USERNAME }}
+    GITHUB_USERNAME: ${{ inputs.GITHUB_USERNAME }}
+    AZURE_REGISTRY_NAME: ${{ inputs.AZURE_REGISTRY_NAME }}
 
   args:
     - ${{ inputs.command }}

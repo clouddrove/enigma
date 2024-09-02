@@ -17,6 +17,10 @@ elif [ "$PROVIDER" = "dockerhub" ]; then
 elif [ "$PROVIDER" = "github" ]; then
   echo "$TOKEN" | docker login ghcr.io -u "$GITHUB_USERNAME" --password-stdin
 
+# Check if provider is Azure
+elif [ "$PROVIDER" = "azure" ]; then
+  az acr login --name "$AZURE_REGISTRY_NAME"
+  
 else
   echo "Please pass a valid provider"
 fi
