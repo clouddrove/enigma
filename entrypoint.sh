@@ -19,7 +19,6 @@ elif [ "$PROVIDER" = "github" ]; then
 
 else
   echo "Please pass a valid provider"
-  exit 1
 fi
 
 # Execute the application
