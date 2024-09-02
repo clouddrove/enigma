@@ -42,6 +42,15 @@ inputs:
   AZURE_REGISTRY_NAME:
     description: 'Azure Registry name'
     required: false
+  AZURE_CLIENT_ID:
+    description: 'Client ID'
+    required: false
+  AZURE_TENANT_ID:
+    description: 'Tenanat ID'
+    required: false
+  AZURE_CLIENT_SECRET:
+    description: 'Client Secret'
+    required: false
   
 runs:
   using: 'docker'
@@ -59,7 +68,9 @@ runs:
     TOKEN: ${{ inputs.TOKEN }}
     GITHUB_USERNAME: ${{ inputs.GITHUB_USERNAME }}
     AZURE_REGISTRY_NAME: ${{ inputs.AZURE_REGISTRY_NAME }}
+    AZURE_CLIENT_ID: ${{ inputs.AZURE_CLIENT_ID }}
+    AZURE_TENANT_ID: ${{ inputs.AZURE_TENANT_ID }}
+    AZURE_CLIENT_SECRET: ${{ inputs.AZURE_CLIENT_SECRET }}
 
   args:
     - ${{ inputs.command }}
-    

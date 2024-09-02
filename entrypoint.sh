@@ -19,8 +19,9 @@ elif [ "$PROVIDER" = "github" ]; then
 
 # Check if provider is Azure
 elif [ "$PROVIDER" = "azure" ]; then
+  az login --service-principal -u "$AZURE_CLIENT_ID" -p "$AZURE_CLIENT_SECRET" --tenant "$AZURE_TENANT_ID" 
   az acr login --name "$AZURE_REGISTRY_NAME"
-  
+
 else
   echo "Please pass a valid provider"
 fi
