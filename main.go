@@ -12,9 +12,16 @@ import (
 // loadDockerEnv loads environment variables from the .enigma file located in the docker module.
 // This function sets up necessary environment variables for Docker operations.
 func loadDockerEnv() {
-	err := godotenv.Load(".enigma")
-	if err != nil {
-		log.Fatalf("Error loading .enigma file: %v", err)
+	// Check if running in a CI/CD environment
+	isCICD := os.Getenv("CI") != "" || os.Getenv("GITHUB_ACTIONS") != ""
+
+	if !isCICD {
+		err := godotenv.Load(".enigma")
+		if err != nil {
+			log.Fatalf("Error loading .enigma file: %v", err)
+		}
+	} else {
+		fmt.Println("Running in CI/CD environment; skipping .enigma file load.")
 	}
 }
 
