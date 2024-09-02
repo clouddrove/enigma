@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
     lsb-release \
+    bash \
     unzip
 
 # Add Docker's official GPG key
@@ -26,8 +27,19 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install && \
     rm -rf aws awscliv2.zip
 
+# Install GCP CLI
+RUN curl https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.tar.gz > /tmp/google-cloud-sdk.tar.gz
+
+RUN mkdir -p /usr/local/gcloud \
+  && tar -C /usr/local/gcloud -xvf /tmp/google-cloud-sdk.tar.gz \
+  && /usr/local/gcloud/google-cloud-sdk/install.sh
+
+ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
+
+# Install Azure CLI
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
 WORKDIR /go/src/app
 COPY . .
 RUN go build -o enigma main.go
-
 ENTRYPOINT ["/go/src/app/entrypoint.sh"]

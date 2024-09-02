@@ -1,5 +1,6 @@
 name: 'Enigma Docker Build and Publish'
 description: 'Builds, scans, tags, and pushes Docker images using the Enigma tool'
+
 inputs:
   command:
     description: 'Command to run (bake or publish)'
@@ -16,10 +17,41 @@ inputs:
     default: 'false'
   AWS_REGION:
     description: 'AWS Region'
-    required: true
+    required: false
   AWS_ACCOUNT_ID:
     description: 'AWS Account ID'
-    required: true
+    required: false
+  GCP_PROJECT_ID:
+    description: 'GCP Project ID'
+    required: false
+  GCP_REGION:
+    description: 'GCP Region'
+    required: false
+  DOCKER_USERNAME:
+    description: 'Docker Hub username'
+    required: false
+  DOCKER_PASSWORD:
+    description: 'Docker Hub password'
+    required: false
+  TOKEN: 
+    description: 'GitHub Token'
+    required: false
+  GITHUB_USERNAME: 
+    description: 'GitHub Username'
+    required: false
+  AZURE_REGISTRY_NAME:
+    description: 'Azure Registry name'
+    required: false
+  AZURE_CLIENT_ID:
+    description: 'Client ID'
+    required: false
+  AZURE_TENANT_ID:
+    description: 'Tenanat ID'
+    required: false
+  AZURE_CLIENT_SECRET:
+    description: 'Client Secret'
+    required: false
+  
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -28,7 +60,17 @@ runs:
     DOCKER_TAG: ${{ inputs.DOCKER_TAG }}
     AWS_ACCOUNT_ID: ${{ inputs.AWS_ACCOUNT_ID }}
     AWS_REGION: ${{ inputs.AWS_REGION }}
-    CLEANUP: ${{ inputs.AWS_REGION }}
-    
+    GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
+    GCP_REGION: ${{ inputs.GCP_REGION }}
+    CLEANUP: ${{ inputs.CLEANUP }}
+    DOCKER_USERNAME: ${{ inputs.DOCKER_USERNAME }}
+    DOCKER_PASSWORD: ${{ inputs.DOCKER_PASSWORD }}
+    TOKEN: ${{ inputs.TOKEN }}
+    GITHUB_USERNAME: ${{ inputs.GITHUB_USERNAME }}
+    AZURE_REGISTRY_NAME: ${{ inputs.AZURE_REGISTRY_NAME }}
+    AZURE_CLIENT_ID: ${{ inputs.AZURE_CLIENT_ID }}
+    AZURE_TENANT_ID: ${{ inputs.AZURE_TENANT_ID }}
+    AZURE_CLIENT_SECRET: ${{ inputs.AZURE_CLIENT_SECRET }}
+
   args:
     - ${{ inputs.command }}
