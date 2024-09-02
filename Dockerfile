@@ -42,4 +42,5 @@ RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 WORKDIR /go/src/app
 COPY . .
 RUN go build -o enigma main.go
+RUN chmod +x enigma
 ENTRYPOINT ["/go/src/app/entrypoint.sh"]
