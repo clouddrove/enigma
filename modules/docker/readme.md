@@ -9,9 +9,10 @@ DOCKER_IMAGE=nginx
 DOCKER_TAG=xyz:v1
 CLEANUP=true
 SCAN=false
+DOCKERFILE_PATH=test/Dockerfile
 ```
 
-when working on local keep SCAN=true to it scan your image and generate report for it. 
+when working on local keep SCAN=true to it scan your image and generate report for it and if no Dockerfile path it will use root one.
 
 3. Add Dockerfile of your in root of the folder
 
@@ -49,7 +50,7 @@ jobs:
     steps:
  
       - name: Build Docker Image
-        uses: clouddrove/enigma@v0.0.6
+        uses: clouddrove/enigma@v0.0.7
         with:
           command: bake
           DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
@@ -58,7 +59,7 @@ jobs:
           AWS_REGION: ${{ env.AWS_REGION }}
 
       - name: Publish Docker Image
-        uses: clouddrove/enigma@v0.0.6
+        uses: clouddrove/enigma@v0.0.7
         with:
           command: publish
           DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}

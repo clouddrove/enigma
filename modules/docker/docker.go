@@ -12,24 +12,26 @@ import (
 func BuildDockerImage() {
     dockerImage := os.Getenv("DOCKER_IMAGE")
     dockerTag := os.Getenv("DOCKER_TAG")
+    dockerfilePath := os.Getenv("DOCKERFILE_PATH")
 
     if dockerImage == "" || dockerTag == "" {
         log.Fatalf("DOCKER_IMAGE or DOCKER_TAG environment variable is not set")
     }
 
-    // Build the image using the base name (e.g., "aws")
-    cmd := exec.Command("docker", "build", "-t", dockerImage, ".")
+    if dockerfilePath == "" {
+        dockerfilePath = "Dockerfile"
+    }
+
+    cmd := exec.Command("docker", "build", "-f", dockerfilePath, "-t", dockerImage, ".")
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
 
-    fmt.Println("Building Docker image:", dockerImage)
+    fmt.Println("Building Docker image:", dockerImage, "using Dockerfile:", dockerfilePath)
 
     err := cmd.Run()
     if err != nil {
         log.Fatalf("Error running docker build: %v", err)
     }
-
-    fmt.Println("Build complete.")
 
     fmt.Println("Build complete.")
     TagDockerImage()
@@ -73,7 +75,7 @@ func ScanDockerImage() {
 func TagDockerImage() {
     dockerImage := os.Getenv("DOCKER_IMAGE")
     dockerTag := os.Getenv("DOCKER_TAG")
-    
+
     if dockerImage == "" || dockerTag == "" {
         log.Fatalf("DOCKER_IMAGE or DOCKER_TAG environment variable is not set")
     }
@@ -98,11 +100,11 @@ func TagDockerImage() {
 func PushDockerImage() {
     dockerTag := os.Getenv("DOCKER_TAG")
     cleanup := os.Getenv("CLEANUP")
-    
+
     if dockerTag == "" {
         log.Fatalf("DOCKER_TAG environment variable is not set")
     }
-    
+
     cmdPush := exec.Command("docker", "push", dockerTag)
     cmdPush.Stdout = os.Stdout
     cmdPush.Stderr = os.Stderr
@@ -112,7 +114,7 @@ func PushDockerImage() {
         log.Fatalf("Error pushing docker image: %v", err)
     }
     fmt.Println("Docker image successfully pushed to the specified registry.")
-    
+
     if cleanup != "false" {
         fmt.Println("Cleanup is enabled. Removing tagged image.")
         cmdRm := exec.Command("docker", "rmi", dockerTag)
