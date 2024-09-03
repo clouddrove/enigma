@@ -12,7 +12,7 @@ SCAN=false
 DOCKERFILE_PATH=test/Dockerfile
 ```
 
-when working on local keep SCAN=true to it scan your image and generate report for it.
+when working on local keep SCAN=true to it scan your image and generate report for it and if no Dockerfile path it will use root one.
 
 3. Add Dockerfile of your in root of the folder
 
