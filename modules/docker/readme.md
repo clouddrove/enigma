@@ -50,7 +50,7 @@ jobs:
     steps:
  
       - name: Build Docker Image
-        uses: clouddrove/enigma@v0.0.6
+        uses: clouddrove/enigma@v0.0.7
         with:
           command: bake
           DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
@@ -59,7 +59,7 @@ jobs:
           AWS_REGION: ${{ env.AWS_REGION }}
 
       - name: Publish Docker Image
-        uses: clouddrove/enigma@v0.0.6
+        uses: clouddrove/enigma@v0.0.7
         with:
           command: publish
           DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
