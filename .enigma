@@ -1,5 +1,5 @@
-DOCKER_IMAGE=test
-DOCKER_TAG=shivamkumar28dec/enigma
-CLEANUP=true
-SCAN=true
-# DOCKERFILE_PATH= test/Dockerfile
+DOCKER_IMAGE=
+DOCKER_TAG=
+CLEANUP=
+SCAN=
+# DOCKERFILE_PATH=
