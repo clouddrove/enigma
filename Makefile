@@ -41,18 +41,18 @@ $(PACKAGE): $(PROGRAM)
 	mkdir $(dir $@)
 	tar -czf $@ -C $(dir $<) $(notdir $<)
 
-
-
 install:
 	go install -ldflags="-X '$(REPO)/program.Version=${VERSION}'"
 
+# image: .Dockerfile.tmp
+# 	$(DOCKER) build --no-cache -f $< --build-arg PROGRAM=$(BASENAME) --build-arg VERSION=$(VERSION) --build-arg BASENAME=$(BASENAME) -t $(IMAGE) .
 
-image: .Dockerfile.tmp
-	$(DOCKER) build -f $< --build-arg PROGRAM=$(BASENAME) --build-arg VERSION=$(VERSION) --build-arg BASENAME=$(BASENAME) -t $(IMAGE) .
+# .Dockerfile.tmp: Dockerfile
+# 	sed -e "s|^ENTRYPOINT.*|ENTRYPOINT [\"/${BASENAME}\"]|" < $< > $@.tmp
+# 	mv -f $@.tmp $@
 
-.Dockerfile.tmp: Dockerfile
-	sed -e "s|^ENTRYPOINT.*|ENTRYPOINT [\"/${BASENAME}\"]|" < $< > $@.tmp
-	mv -f $@.tmp $@
+image:
+	$(DOCKER) build -f Dockerfile --build-arg PROGRAM=$(BASENAME) --build-arg VERSION=$(VERSION) --build-arg BASENAME=$(BASENAME) -t $(IMAGE) .
 
 test:
 	go test -v ./...
