@@ -47,9 +47,9 @@ jobs:
   login:
     runs-on: ubuntu-latest
     steps:
-
+ 
       - name: Build Docker Image
-        uses: clouddrove/enigma@main
+        uses: clouddrove/enigma@v0.0.6
         with:
           command: bake
           DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
@@ -58,7 +58,7 @@ jobs:
           AWS_REGION: ${{ env.AWS_REGION }}
 
       - name: Publish Docker Image
-        uses: clouddrove/enigma@main
+        uses: clouddrove/enigma@v0.0.6
         with:
           command: publish
           DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
