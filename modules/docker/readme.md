@@ -9,9 +9,10 @@ DOCKER_IMAGE=nginx
 DOCKER_TAG=xyz:v1
 CLEANUP=true
 SCAN=false
+DOCKERFILE_PATH=test/Dockerfile
 ```
 
-when working on local keep SCAN=true to it scan your image and generate report for it. 
+when working on local keep SCAN=true to it scan your image and generate report for it.
 
 3. Add Dockerfile of your in root of the folder
 
