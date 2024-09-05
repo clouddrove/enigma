@@ -10,11 +10,14 @@ DOCKER_TAG=xyz:v1
 CLEANUP=true
 SCAN=false
 DOCKERFILE_PATH=test/Dockerfile
+BUILD_ARCHITECTURE=amd64
 ```
 
-when working on local keep SCAN=true to it scan your image and generate report for it and if no Dockerfile path it will use root one.
+#### When working on local keep SCAN=true to scan your image and generate report for it.
+#### If no Dockerfile path passed it will use the root one.
+#### To Build on Different ARCHITECTURE pass it in BUILD_ARCHITECTURE variable. It supports `amd64`, `arm64` and `arm`
 
-3. Add Dockerfile of your in root of the folder
+3. Add your Dockerfile.
 
 4. Now from root of the folder run:
 
@@ -50,7 +53,7 @@ jobs:
     steps:
  
       - name: Build Docker Image
-        uses: clouddrove/enigma@v0.0.7
+        uses: clouddrove/enigma@v0.0.8
         with:
           command: bake
           DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
@@ -59,7 +62,7 @@ jobs:
           AWS_REGION: ${{ env.AWS_REGION }}
 
       - name: Publish Docker Image
-        uses: clouddrove/enigma@v0.0.7
+        uses: clouddrove/enigma@v0.0.8
         with:
           command: publish
           DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}

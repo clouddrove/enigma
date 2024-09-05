@@ -5,14 +5,16 @@ import (
     "log"
     "os"
     "os/exec"
+    "strings"
 )
 
 // BuildDockerImage builds a Docker image based on the environment variables.
-// It uses the `docker build` command to create the image with a specified tag.
+// It supports different architectures specified by BUILD_ARCHITECTURE,
 func BuildDockerImage() {
     dockerImage := os.Getenv("DOCKER_IMAGE")
     dockerTag := os.Getenv("DOCKER_TAG")
     dockerfilePath := os.Getenv("DOCKERFILE_PATH")
+    buildArchitecture := os.Getenv("BUILD_ARCHITECTURE")
 
     if dockerImage == "" || dockerTag == "" {
         log.Fatalf("DOCKER_IMAGE or DOCKER_TAG environment variable is not set")
@@ -22,11 +24,23 @@ func BuildDockerImage() {
         dockerfilePath = "Dockerfile"
     }
 
-    cmd := exec.Command("docker", "build", "-f", dockerfilePath, "-t", dockerImage, ".")
+    buildArgs := []string{"build", "-f", dockerfilePath}
+
+    if buildArchitecture != "" {
+        platform := getPlatform(buildArchitecture)
+        buildArgs = append(buildArgs, "--platform", platform)
+    }
+
+    buildArgs = append(buildArgs, "-t", dockerImage, ".")
+
+    cmd := exec.Command("docker", buildArgs...)
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
 
-    fmt.Println("Building Docker image:", dockerImage, "using Dockerfile:", dockerfilePath)
+    fmt.Printf("Building Docker image: %s using Dockerfile: %s\n", dockerImage, dockerfilePath)
+    if buildArchitecture != "" {
+        fmt.Printf("Building for architecture: %s\n", buildArchitecture)
+    }
 
     err := cmd.Run()
     if err != nil {
@@ -35,6 +49,20 @@ func BuildDockerImage() {
 
     fmt.Println("Build complete.")
     TagDockerImage()
+}
+
+func getPlatform(architecture string) string {
+    switch strings.ToLower(architecture) {
+    case "amd64":
+        return "linux/amd64"
+    case "arm64":
+        return "linux/arm64"
+    case "arm":
+        return "linux/arm/v7"
+    default:
+        log.Fatalf("Unsupported architecture: %s", architecture)
+        return ""
+    }
 }
 
 // ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.

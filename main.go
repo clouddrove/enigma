@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/clouddrove/enigma/generate"
 	"github.com/clouddrove/enigma/modules/docker"
 	"github.com/joho/godotenv"
 )
@@ -12,7 +13,6 @@ import (
 // loadDockerEnv loads environment variables from the .enigma file located in the docker module.
 // This function sets up necessary environment variables for Docker operations.
 func loadDockerEnv() {
-	// Check if running in a CI/CD environment
 	isCICD := os.Getenv("CI") != "" || os.Getenv("GITHUB_ACTIONS") != ""
 
 	if !isCICD {
@@ -28,13 +28,19 @@ func loadDockerEnv() {
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: enigma <command>")
-		fmt.Println("Commands: bake, publish")
+		fmt.Println("Commands: init, bake, publish")
 		os.Exit(1)
 	}
 
 	command := os.Args[1]
 
 	switch command {
+	case "init":
+		err := generate.GenerateEnigmaFile("modules/docker", ".enigma")
+		if err != nil {
+			fmt.Printf("Error generating .enigma file: %v\n", err)
+			os.Exit(1)
+		}
 	case "bake":
 		loadDockerEnv()
 		docker.BuildDockerImage()
@@ -43,9 +49,8 @@ func main() {
 		loadDockerEnv()
 		docker.TagDockerImage()
 		docker.PushDockerImage()
-		
 	default:
 		fmt.Println("Unknown command:", command)
-		fmt.Println("Commands: bake, publish")
+		fmt.Println("Commands: init, bake, publish")
 	}
 }
