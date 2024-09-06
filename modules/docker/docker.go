@@ -9,11 +9,10 @@ import (
 )
 
 // BuildDockerImage builds a Docker image based on environment variables.
-// It supports different architectures, no-cache, and accepts dynamic build arguments.
+// It supports dynamic build arguments and optional no-cache.
 func BuildDockerImage() {
     dockerTag := os.Getenv("DOCKER_TAG")
     dockerfilePath := os.Getenv("DOCKERFILE_PATH")
-    buildArchitecture := os.Getenv("BUILD_ARCHITECTURE")
     noCache := os.Getenv("NO_CACHE") == "true"
     buildArgs := os.Getenv("BUILD_ARGS")
     
@@ -37,18 +36,13 @@ func BuildDockerImage() {
         }
     }
 
-    if buildArchitecture != "" {
-        platform := getPlatform(buildArchitecture)
-        args = append(args, "--platform", platform)
-    }
-
     cmd := exec.Command("docker", args...)
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
 
     fmt.Println("Building Docker image:", dockerTag)
     if err := cmd.Run(); err != nil {
-        log.Fatalf("Error building docker image: %v", err)
+        log.Fatalf("Error building Docker image: %v", err)
     }
 
     // List images to verify
@@ -56,25 +50,11 @@ func BuildDockerImage() {
     cmdList.Stdout = os.Stdout
     cmdList.Stderr = os.Stderr
     if err := cmdList.Run(); err != nil {
-        log.Fatalf("Error listing docker images: %v", err)
+        log.Fatalf("Error listing Docker images: %v", err)
     }
 
     fmt.Println("Build complete.")
     TagDockerImage()
-}
-
-func getPlatform(architecture string) string {
-    switch strings.ToLower(architecture) {
-    case "amd64":
-        return "linux/amd64"
-    case "arm64":
-        return "linux/arm64"
-    case "arm":
-        return "linux/arm/v7"
-    default:
-        log.Fatalf("Unsupported architecture: %s", architecture)
-        return ""
-    }
 }
 
 // ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
@@ -127,7 +107,7 @@ func TagDockerImage() {
     cmdTag.Stderr = os.Stderr
 
     if err := cmdTag.Run(); err != nil {
-        log.Fatalf("Error tagging docker image: %v", err)
+        log.Fatalf("Error tagging Docker image: %v", err)
     }
 
     fmt.Println("Docker image tagged successfully.")
@@ -150,7 +130,7 @@ func PushDockerImage() {
     fmt.Printf("Pushing Docker image: docker push %s\n", dockerTag)
     err := cmdPush.Run()
     if err != nil {
-        log.Fatalf("Error pushing docker image: %v", err)
+        log.Fatalf("Error pushing Docker image: %v", err)
     }
     fmt.Println("Docker image successfully pushed to the specified registry.")
 
