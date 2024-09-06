@@ -25,7 +25,7 @@ func BuildDockerImage() {
         dockerfilePath = "Dockerfile"
     }
 
-    args := []string{"build", "-f", dockerfilePath}
+    args := []string{"build", "-f", dockerfilePath, "-t", dockerTag}
 
     if noCache {
         args = append(args, "--no-cache")
@@ -40,6 +40,23 @@ func BuildDockerImage() {
     if buildArchitecture != "" {
         platform := getPlatform(buildArchitecture)
         args = append(args, "--platform", platform)
+    }
+
+    cmd := exec.Command("docker", args...)
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+
+    fmt.Println("Building Docker image:", dockerTag)
+    if err := cmd.Run(); err != nil {
+        log.Fatalf("Error building docker image: %v", err)
+    }
+
+    // List images to verify
+    cmdList := exec.Command("docker", "images")
+    cmdList.Stdout = os.Stdout
+    cmdList.Stderr = os.Stderr
+    if err := cmdList.Run(); err != nil {
+        log.Fatalf("Error listing docker images: %v", err)
     }
 
     fmt.Println("Build complete.")
@@ -103,14 +120,13 @@ func TagDockerImage() {
         log.Fatalf("DOCKER_IMAGE or DOCKER_TAG environment variable is not set")
     }
 
+    fmt.Printf("Tagging Docker image: %s as %s\n", dockerImage, dockerTag)
+
     cmdTag := exec.Command("docker", "tag", dockerImage, dockerTag)
     cmdTag.Stdout = os.Stdout
     cmdTag.Stderr = os.Stderr
 
-    fmt.Printf("Tagging Docker image: %s as %s\n", dockerImage, dockerTag)
-
-    err := cmdTag.Run()
-    if err != nil {
+    if err := cmdTag.Run(); err != nil {
         log.Fatalf("Error tagging docker image: %v", err)
     }
 
