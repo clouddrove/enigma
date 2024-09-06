@@ -16,8 +16,7 @@ func BuildDockerImage() {
     buildArchitecture := os.Getenv("BUILD_ARCHITECTURE")
     noCache := os.Getenv("NO_CACHE") == "true"
     buildArgs := os.Getenv("BUILD_ARGS")
-    extraBuildArgs := os.Getenv("EXTRA_BUILD_ARGS")
-
+    
     if dockerTag == "" {
         log.Fatalf("DOCKER_TAG environment variable is not set")
     }
@@ -38,31 +37,9 @@ func BuildDockerImage() {
         }
     }
 
-    if extraBuildArgs != "" {
-        for _, arg := range strings.Split(extraBuildArgs, ",") {
-            args = append(args, "--build-arg", strings.TrimSpace(arg))
-        }
-    }
-
     if buildArchitecture != "" {
         platform := getPlatform(buildArchitecture)
         args = append(args, "--platform", platform)
-    }
-
-    args = append(args, "-t", dockerTag, ".")
-
-    cmd := exec.Command("docker", args...)
-    cmd.Stdout = os.Stdout
-    cmd.Stderr = os.Stderr
-
-    fmt.Printf("Building Docker image: %s using Dockerfile: %s\n", dockerTag, dockerfilePath)
-    if buildArchitecture != "" {
-        fmt.Printf("Building for architecture: %s\n", buildArchitecture)
-    }
-
-    err := cmd.Run()
-    if err != nil {
-        log.Fatalf("Error running docker build: %v", err)
     }
 
     fmt.Println("Build complete.")
