@@ -8,36 +8,54 @@ import (
     "strings"
 )
 
-// BuildDockerImage builds a Docker image based on the environment variables.
-// It supports different architectures specified by BUILD_ARCHITECTURE,
+// BuildDockerImage builds a Docker image based on environment variables.
+// It supports different architectures, no-cache, and accepts dynamic build arguments.
 func BuildDockerImage() {
-    dockerImage := os.Getenv("DOCKER_IMAGE")
     dockerTag := os.Getenv("DOCKER_TAG")
     dockerfilePath := os.Getenv("DOCKERFILE_PATH")
     buildArchitecture := os.Getenv("BUILD_ARCHITECTURE")
+    noCache := os.Getenv("NO_CACHE") == "true"
+    buildArgs := os.Getenv("BUILD_ARGS")
+    extraBuildArgs := os.Getenv("EXTRA_BUILD_ARGS")
 
-    if dockerImage == "" || dockerTag == "" {
-        log.Fatalf("DOCKER_IMAGE or DOCKER_TAG environment variable is not set")
+    if dockerTag == "" {
+        log.Fatalf("DOCKER_TAG environment variable is not set")
     }
 
     if dockerfilePath == "" {
         dockerfilePath = "Dockerfile"
     }
 
-    buildArgs := []string{"build", "-f", dockerfilePath}
+    args := []string{"build", "-f", dockerfilePath}
+
+    if noCache {
+        args = append(args, "--no-cache")
+    }
+
+    if buildArgs != "" {
+        for _, arg := range strings.Split(buildArgs, ",") {
+            args = append(args, "--build-arg", strings.TrimSpace(arg))
+        }
+    }
+
+    if extraBuildArgs != "" {
+        for _, arg := range strings.Split(extraBuildArgs, ",") {
+            args = append(args, "--build-arg", strings.TrimSpace(arg))
+        }
+    }
 
     if buildArchitecture != "" {
         platform := getPlatform(buildArchitecture)
-        buildArgs = append(buildArgs, "--platform", platform)
+        args = append(args, "--platform", platform)
     }
 
-    buildArgs = append(buildArgs, "-t", dockerImage, ".")
+    args = append(args, "-t", dockerTag, ".")
 
-    cmd := exec.Command("docker", buildArgs...)
+    cmd := exec.Command("docker", args...)
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
 
-    fmt.Printf("Building Docker image: %s using Dockerfile: %s\n", dockerImage, dockerfilePath)
+    fmt.Printf("Building Docker image: %s using Dockerfile: %s\n", dockerTag, dockerfilePath)
     if buildArchitecture != "" {
         fmt.Printf("Building for architecture: %s\n", buildArchitecture)
     }
