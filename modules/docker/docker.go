@@ -8,61 +8,47 @@ import (
     "strings"
 )
 
-// BuildDockerImage builds a Docker image based on the environment variables.
-// It supports different architectures specified by BUILD_ARCHITECTURE,
+// BuildDockerImage builds a Docker image based on environment variables.
+// It supports dynamic build arguments and optional no-cache.
+// BuildDockerImage builds a Docker image based on environment variables.
+// It supports dynamic build arguments and optional no-cache.
 func BuildDockerImage() {
-    dockerImage := os.Getenv("DOCKER_IMAGE")
     dockerTag := os.Getenv("DOCKER_TAG")
     dockerfilePath := os.Getenv("DOCKERFILE_PATH")
-    buildArchitecture := os.Getenv("BUILD_ARCHITECTURE")
+    noCache := os.Getenv("NO_CACHE") == "true"
+    buildArgs := os.Getenv("BUILD_ARGS")
 
-    if dockerImage == "" || dockerTag == "" {
-        log.Fatalf("DOCKER_IMAGE or DOCKER_TAG environment variable is not set")
+    if dockerTag == "" {
+        log.Fatalf("DOCKER_TAG environment variable is not set")
     }
 
     if dockerfilePath == "" {
         dockerfilePath = "Dockerfile"
     }
 
-    buildArgs := []string{"build", "-f", dockerfilePath}
+    args := []string{"build", "-f", dockerfilePath, "-t", dockerTag}
 
-    if buildArchitecture != "" {
-        platform := getPlatform(buildArchitecture)
-        buildArgs = append(buildArgs, "--platform", platform)
+    if noCache {
+        args = append(args, "--no-cache")
     }
 
-    buildArgs = append(buildArgs, "-t", dockerImage, ".")
+    if buildArgs != "" {
+        for _, arg := range strings.Split(buildArgs, ",") {
+            args = append(args, "--build-arg", strings.TrimSpace(arg))
+        }
+    }
 
-    cmd := exec.Command("docker", buildArgs...)
+    cmd := exec.Command("docker", args...)
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
 
-    fmt.Printf("Building Docker image: %s using Dockerfile: %s\n", dockerImage, dockerfilePath)
-    if buildArchitecture != "" {
-        fmt.Printf("Building for architecture: %s\n", buildArchitecture)
-    }
-
-    err := cmd.Run()
-    if err != nil {
-        log.Fatalf("Error running docker build: %v", err)
+    fmt.Println("Building Docker image:", dockerTag)
+    if err := cmd.Run(); err != nil {
+        log.Fatalf("Error building Docker image: %v", err)
     }
 
     fmt.Println("Build complete.")
     TagDockerImage()
-}
-
-func getPlatform(architecture string) string {
-    switch strings.ToLower(architecture) {
-    case "amd64":
-        return "linux/amd64"
-    case "arm64":
-        return "linux/arm64"
-    case "arm":
-        return "linux/arm/v7"
-    default:
-        log.Fatalf("Unsupported architecture: %s", architecture)
-        return ""
-    }
 }
 
 // ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
@@ -108,15 +94,14 @@ func TagDockerImage() {
         log.Fatalf("DOCKER_IMAGE or DOCKER_TAG environment variable is not set")
     }
 
+    fmt.Printf("Tagging Docker image: %s as %s\n", dockerImage, dockerTag)
+
     cmdTag := exec.Command("docker", "tag", dockerImage, dockerTag)
     cmdTag.Stdout = os.Stdout
     cmdTag.Stderr = os.Stderr
 
-    fmt.Printf("Tagging Docker image: %s as %s\n", dockerImage, dockerTag)
-
-    err := cmdTag.Run()
-    if err != nil {
-        log.Fatalf("Error tagging docker image: %v", err)
+    if err := cmdTag.Run(); err != nil {
+        log.Fatalf("Error tagging Docker image: %v", err)
     }
 
     fmt.Println("Docker image tagged successfully.")
@@ -139,7 +124,7 @@ func PushDockerImage() {
     fmt.Printf("Pushing Docker image: docker push %s\n", dockerTag)
     err := cmdPush.Run()
     if err != nil {
-        log.Fatalf("Error pushing docker image: %v", err)
+        log.Fatalf("Error pushing Docker image: %v", err)
     }
     fmt.Println("Docker image successfully pushed to the specified registry.")
 
