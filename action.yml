@@ -61,9 +61,6 @@ inputs:
   BUILD_ARGS:
     description: 'Additional build arguments for Docker build'
     required: false
-  EXTRA_BUILD_ARGS:
-    description: 'Extra build arguments for Docker build'
-    required: false
   NO_CACHE:
     description: 'Set to true to disable Docker cache'
     required: false
@@ -90,7 +87,6 @@ runs:
     DOCKERFILE_PATH: ${{ inputs.DOCKERFILE_PATH }}
     BUILD_ARCHITECTURE: ${{ inputs.BUILD_ARCHITECTURE }}
     BUILD_ARGS: ${{ inputs.BUILD_ARGS }}
-    EXTRA_BUILD_ARGS: ${{ inputs.EXTRA_BUILD_ARGS }}
     NO_CACHE: ${{ inputs.NO_CACHE }}
   args:
     - ${{ inputs.command }}
