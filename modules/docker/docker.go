@@ -10,8 +10,6 @@ import (
 
 // BuildDockerImage builds a Docker image based on environment variables.
 // It supports dynamic build arguments and optional no-cache.
-// BuildDockerImage builds a Docker image based on environment variables.
-// It supports dynamic build arguments and optional no-cache.
 func BuildDockerImage() {
     dockerTag := os.Getenv("DOCKER_TAG")
     dockerfilePath := os.Getenv("DOCKERFILE_PATH")
