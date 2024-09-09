@@ -15,6 +15,7 @@ func BuildDockerImage() {
     dockerfilePath := os.Getenv("DOCKERFILE_PATH")
     noCache := os.Getenv("NO_CACHE") == "true"
     buildArgs := os.Getenv("BUILD_ARGS")
+    dockerImage := os.Getenv("DOCKER_IMAGE")
 
     if dockerTag == "" {
         log.Fatalf("DOCKER_TAG environment variable is not set")
@@ -24,7 +25,7 @@ func BuildDockerImage() {
         dockerfilePath = "Dockerfile"
     }
 
-    args := []string{"build", "-f", dockerfilePath, "-t", dockerTag}
+    args := []string{"build", "-f", dockerfilePath, "-t", dockerImage, "."}
 
     if noCache {
         args = append(args, "--no-cache")
@@ -40,7 +41,7 @@ func BuildDockerImage() {
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
 
-    fmt.Println("Building Docker image:", dockerTag)
+    fmt.Println("Building Docker image:", dockerImage)
     if err := cmd.Run(); err != nil {
         log.Fatalf("Error building Docker image: %v", err)
     }

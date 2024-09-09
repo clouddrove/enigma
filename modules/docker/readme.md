@@ -11,11 +11,16 @@ CLEANUP=true
 SCAN=false
 DOCKERFILE_PATH=test/Dockerfile
 BUILD_ARCHITECTURE=amd64
+NO_CACHE="true"        
+BUILD_ARGS="APP_VERSION=0.0.0,APP_ENV=test"
+SCAN=false
 ```
 
 #### When working on local keep SCAN=true to scan your image and generate report for it.
 #### If no Dockerfile path passed it will use the root one.
 #### To Build on Different ARCHITECTURE pass it in BUILD_ARCHITECTURE variable. It supports `amd64`, `arm64` and `arm`
+### Pass values in BUILD_ARGS to give build args values in Dockerfile
+### Set NO_CACHE=true for fresh Docker build without using cached layers.
 
 3. Add your Dockerfile.
 
