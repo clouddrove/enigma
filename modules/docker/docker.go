@@ -10,12 +10,14 @@ import (
 
 // BuildDockerImage builds a Docker image based on environment variables.
 // It supports dynamic build arguments and optional no-cache.
+// BuildDockerImage builds a Docker image based on environment variables.
+// It supports dynamic build arguments and optional no-cache.
 func BuildDockerImage() {
     dockerTag := os.Getenv("DOCKER_TAG")
     dockerfilePath := os.Getenv("DOCKERFILE_PATH")
     noCache := os.Getenv("NO_CACHE") == "true"
     buildArgs := os.Getenv("BUILD_ARGS")
-    
+
     if dockerTag == "" {
         log.Fatalf("DOCKER_TAG environment variable is not set")
     }
@@ -43,14 +45,6 @@ func BuildDockerImage() {
     fmt.Println("Building Docker image:", dockerTag)
     if err := cmd.Run(); err != nil {
         log.Fatalf("Error building Docker image: %v", err)
-    }
-
-    // List images to verify
-    cmdList := exec.Command("docker", "images")
-    cmdList.Stdout = os.Stdout
-    cmdList.Stderr = os.Stderr
-    if err := cmdList.Run(); err != nil {
-        log.Fatalf("Error listing Docker images: %v", err)
     }
 
     fmt.Println("Build complete.")
