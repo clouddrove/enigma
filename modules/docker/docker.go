@@ -9,13 +9,14 @@ import (
 )
 
 // BuildDockerImage builds a Docker image based on environment variables.
-// It supports dynamic build arguments and optional no-cache.
+// It supports dynamic build arguments, optional no-cache, and specifying the build architecture.
 func BuildDockerImage() {
     dockerTag := os.Getenv("DOCKER_TAG")
     dockerfilePath := os.Getenv("DOCKERFILE_PATH")
     noCache := os.Getenv("NO_CACHE") == "true"
     buildArgs := os.Getenv("BUILD_ARGS")
     dockerImage := os.Getenv("DOCKER_IMAGE")
+    buildArchitecture := os.Getenv("BUILD_ARCHITECTURE")
 
     if dockerTag == "" {
         log.Fatalf("DOCKER_TAG environment variable is not set")
@@ -30,13 +31,20 @@ func BuildDockerImage() {
     if noCache {
         args = append(args, "--no-cache")
     }
+    
+    if buildArchitecture != "" {
+        platform := getPlatform(buildArchitecture)
+        if platform != "" {
+            args = append(args, "--platform", platform)
+        }
+    }
 
     if buildArgs != "" {
         for _, arg := range strings.Split(buildArgs, ",") {
             args = append(args, "--build-arg", strings.TrimSpace(arg))
         }
     }
-
+    
     cmd := exec.Command("docker", args...)
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
@@ -48,6 +56,20 @@ func BuildDockerImage() {
 
     fmt.Println("Build complete.")
     TagDockerImage()
+}
+
+func getPlatform(architecture string) string {
+    switch strings.ToLower(architecture) {
+    case "amd64":
+        return "linux/amd64"
+    case "arm64":
+        return "linux/arm64"
+    case "arm":
+        return "linux/arm/v7"
+    default:
+        log.Printf("Unsupported architecture: %s. Using default platform.", architecture)
+        return ""
+    }
 }
 
 // ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
