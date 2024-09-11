@@ -58,12 +58,14 @@ inputs:
   BUILD_ARCHITECTURE:
     description: 'Build Architecture'
     required: false
+    default: 'amd64'
   BUILD_ARGS:
     description: 'Additional build arguments for Docker build'
     required: false
   NO_CACHE:
     description: 'Set to true to disable Docker cache'
     required: false
+    default: 'false'
   
 runs:
   using: 'docker'

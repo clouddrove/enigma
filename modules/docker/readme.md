@@ -43,7 +43,7 @@ go build -o enigma main.go
   ```
 
 ## Usage in GitHub Actions
-### This GitHub Action builds docker image, tags and pushes to the registry you want. 
+### This GitHub Action builds docker image, tags and pushes to the registry you want. It also provies Build architecture feature to build on platform you want
 
 ```yaml
 name: Enigma Docker
@@ -65,6 +65,7 @@ jobs:
           DOCKER_TAG: ${{ env.DOCKER_TAG }}
           AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ env.AWS_REGION }}
+          BUILD_ARCHITECTURE: ${{ inputs.BUILD_ARCHITECTURE }}
 
       - name: Publish Docker Image
         uses: clouddrove/enigma@v0.0.9
@@ -74,4 +75,5 @@ jobs:
           DOCKER_TAG: ${{ env.DOCKER_TAG }}
           AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ env.AWS_REGION }}
+          BUILD_ARCHITECTURE: ${{ inputs.BUILD_ARCHITECTURE }}
 ```
