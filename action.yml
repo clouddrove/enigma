@@ -66,6 +66,10 @@ inputs:
     description: 'Set to true to disable Docker cache'
     required: false
     default: 'false'
+  PUBLISH:
+    description: 'Whether to publish the image'
+    required: false
+    default: 'false'
   
 runs:
   using: 'docker'
@@ -90,5 +94,6 @@ runs:
     BUILD_ARCHITECTURE: ${{ inputs.BUILD_ARCHITECTURE }}
     BUILD_ARGS: ${{ inputs.BUILD_ARGS }}
     NO_CACHE: ${{ inputs.NO_CACHE }}
+    PUBLISH: ${{ inputs.PUBLISH }}
   args:
     - ${{ inputs.command }}
