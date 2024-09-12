@@ -49,6 +49,16 @@ func main() {
 		loadDockerEnv()
 		docker.TagDockerImage()
 		docker.PushDockerImage()
+	case "build-publish":
+		loadDockerEnv()
+		docker.BuildDockerImage()
+		docker.ScanDockerImage()
+		if os.Getenv("PUBLISH") == "true" {
+			docker.TagDockerImage()
+			docker.PushDockerImage()
+		} else {
+			fmt.Println("Publish is set to false. Skipping publish step.")
+		}
 	default:
 		fmt.Println("Unknown command:", command)
 		fmt.Println("Commands: init, bake, publish")
