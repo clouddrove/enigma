@@ -1,11 +1,11 @@
 package docker
 
 import (
-    "fmt"
-    "log"
-    "os"
-    "os/exec"
-    "strings"
+	"fmt"
+	"log"
+	"os"
+	"os/exec"
+	"strings"
 )
 
 // BuildDockerImage builds a Docker image based on environment variables.
@@ -22,11 +22,15 @@ func BuildDockerImage() {
         log.Fatalf("DOCKER_TAG environment variable is not set")
     }
 
+    if dockerImage == "" {
+        log.Fatalf("DOCKER_IMAGE environment variable is not set")
+    }
+
     if dockerfilePath == "" {
         dockerfilePath = "Dockerfile"
     }
 
-    args := []string{"build", "-f", dockerfilePath, "-t", dockerImage, "."}
+    args := []string{"build", "-f", dockerfilePath, "-t", dockerImage + ":" + dockerTag, "."}
 
     if noCache {
         args = append(args, "--no-cache")
@@ -49,7 +53,7 @@ func BuildDockerImage() {
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
 
-    fmt.Println("Building Docker image:", dockerImage)
+    fmt.Printf("Building Docker image: %s:%s\n", dockerImage, dockerTag)
     if err := cmd.Run(); err != nil {
         log.Fatalf("Error building Docker image: %v", err)
     }
