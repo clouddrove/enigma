@@ -1,11 +1,13 @@
 package docker
 
 import (
+    "bufio"
     "fmt"
     "log"
     "os"
     "os/exec"
     "strings"
+    "unicode"
 )
 
 // BuildDockerImage builds a Docker image based on environment variables.
@@ -31,7 +33,7 @@ func BuildDockerImage() {
     if noCache {
         args = append(args, "--no-cache")
     }
-    
+
     if buildArchitecture != "" {
         platform := getPlatform(buildArchitecture)
         if platform != "" {
@@ -44,7 +46,7 @@ func BuildDockerImage() {
             args = append(args, "--build-arg", strings.TrimSpace(arg))
         }
     }
-    
+
     cmd := exec.Command("docker", args...)
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
@@ -177,4 +179,74 @@ func InstallBinfmt() {
     }
 
     fmt.Println("binfmt installation complete.")
+}
+
+// LoadEnvFromEnigma loads environment variables from the .enigma file.
+func LoadEnvFromEnigma() {
+    // Check if .enigma file exists
+    if _, err := os.Stat(".enigma"); os.IsNotExist(err) {
+        fmt.Println(".enigma file not found. No variables set.")
+        return
+    }
+
+    // Open the .enigma file
+    file, err := os.Open(".enigma")
+    if err != nil {
+        log.Fatalf("Error opening .enigma file: %v", err)
+    }
+    defer file.Close()
+
+    // Read through the .enigma file
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        line := scanner.Text()
+
+        // Split by the first occurrence of ':' to get key-value pairs
+        parts := strings.SplitN(line, ":", 2)
+        if len(parts) < 2 {
+            continue // skip invalid lines
+        }
+        key := strings.TrimSpace(parts[0])
+        value := strings.TrimSpace(parts[1])
+
+        // Validate key as a valid variable name
+        if isValidEnvVarKey(key) {
+            // Replace placeholder ${github.ref_name} with the actual value if necessary
+            value = strings.ReplaceAll(value, "${{ github.ref_name }}", os.Getenv("GITHUB_REF_NAME"))
+
+            // Set the environment variable
+            if err := os.Setenv(key, value); err != nil {
+                log.Printf("Failed to set environment variable %s: %v", key, err)
+            } else {
+                fmt.Printf("Set %s to %s\n", key, value)
+            }
+        }
+    }
+
+    if err := scanner.Err(); err != nil {
+        log.Fatalf("Error reading .enigma file: %v", err)
+    }
+}
+
+// Helper function to validate environment variable key
+func isValidEnvVarKey(key string) bool {
+    if len(key) == 0 {
+        return false
+    }
+    for i, r := range key {
+        if (i == 0 && !isLetter(r)) || (i > 0 && !isLetterOrDigitOrUnderscore(r)) {
+            return false
+        }
+    }
+    return true
+}
+
+// Check if a rune is a letter
+func isLetter(r rune) bool {
+    return unicode.IsLetter(r) || r == '_'
+}
+
+// Check if a rune is a letter, digit, or underscore
+func isLetterOrDigitOrUnderscore(r rune) bool {
+    return isLetter(r) || unicode.IsDigit(r)
 }

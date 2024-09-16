@@ -2,17 +2,17 @@
 set -e
 
 # Load and set variables from .enigma
-if [ -f .enigma ]; then
-  while IFS=':' read -r key value || [ -n "$key" ]; do
-    if [[ $key =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
-      trimmed_value=$(echo "$value" | sed 's/^ *//' | sed 's/\${{ github.ref_name }}/${{ github.ref_name }}/g')
-      export "$key=$trimmed_value"
-      echo "Set $key to $trimmed_value"
-    fi
-  done < .enigma
-else
-  echo ".enigma file not found. No variables set."
-fi
+# if [ -f .enigma ]; then
+#   while IFS=':' read -r key value || [ -n "$key" ]; do
+#     if [[ $key =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+#       trimmed_value=$(echo "$value" | sed 's/^ *//' | sed 's/\${{ github.ref_name }}/${{ github.ref_name }}/g')
+#       export "$key=$trimmed_value"
+#       echo "Set $key to $trimmed_value"
+#     fi
+#   done < .enigma
+# else
+#   echo ".enigma file not found. No variables set."
+# fi
 
 # Check if provider is AWS
 if [ "$PROVIDER" = "aws" ]; then
