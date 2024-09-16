@@ -58,7 +58,7 @@ jobs:
     steps:
  
       - name: Build Docker Image
-        uses: clouddrove/enigma@v0.0.11
+        uses: clouddrove/enigma@v0.0.12
         with:
           command: bake
           DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
@@ -68,7 +68,7 @@ jobs:
           BUILD_ARCHITECTURE: ${{ inputs.BUILD_ARCHITECTURE }}
 
       - name: Publish Docker Image
-        uses: clouddrove/enigma@v0.0.11
+        uses: clouddrove/enigma@v0.0.12
         with:
           command: publish
           DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
