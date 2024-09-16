@@ -163,3 +163,18 @@ func PushDockerImage() {
         fmt.Println("Cleanup is disabled. Tagged image will not be removed.")
     }
 }
+
+// InstallBinfmt installs the binfmt support for multi-platform builds.
+func InstallBinfmt() {
+    fmt.Println("Installing binfmt for multi-platform builds...")
+
+    cmd := exec.Command("docker", "run", "--privileged", "--rm", "tonistiigi/binfmt", "--install", "all")
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+
+    if err := cmd.Run(); err != nil {
+        log.Fatalf("Error installing binfmt: %v", err)
+    }
+
+    fmt.Println("binfmt installation complete.")
+}

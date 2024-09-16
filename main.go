@@ -43,6 +43,7 @@ func main() {
 		}
 	case "bake":
 		loadDockerEnv()
+		docker.InstallBinfmt()
 		docker.BuildDockerImage()
 		docker.ScanDockerImage()
 	case "publish":
