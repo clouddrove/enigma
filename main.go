@@ -48,10 +48,12 @@ func main() {
 		docker.ScanDockerImage()
 	case "publish":
 		loadDockerEnv()
+		docker.InstallBinfmt()
 		docker.TagDockerImage()
 		docker.PushDockerImage()
 	case "build-publish":
 		loadDockerEnv()
+		docker.InstallBinfmt()
 		docker.BuildDockerImage()
 		docker.ScanDockerImage()
 		if os.Getenv("PUBLISH") == "true" {
