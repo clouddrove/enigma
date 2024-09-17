@@ -1,11 +1,13 @@
 package docker
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"os/exec"
-	"strings"
+    "bufio"
+    "fmt"
+    "log"
+    "os"
+    "os/exec"
+    "strings"
+    "unicode"
 )
 
 // BuildDockerImage builds a Docker image based on environment variables.
@@ -35,7 +37,7 @@ func BuildDockerImage() {
     if noCache {
         args = append(args, "--no-cache")
     }
-    
+
     if buildArchitecture != "" {
         platform := getPlatform(buildArchitecture)
         if platform != "" {
@@ -48,7 +50,7 @@ func BuildDockerImage() {
             args = append(args, "--build-arg", strings.TrimSpace(arg))
         }
     }
-    
+
     cmd := exec.Command("docker", args...)
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
@@ -181,4 +183,64 @@ func InstallBinfmt() {
     }
 
     fmt.Println("binfmt installation complete.")
+}
+
+// LoadEnvFromEnigma loads environment variables from the .enigma file.
+func LoadEnvFromEnigma() {
+    if _, err := os.Stat(".enigma"); os.IsNotExist(err) {
+        fmt.Println(".enigma file not found. No variables set.")
+        return
+    }
+
+    file, err := os.Open(".enigma")
+    if err != nil {
+        log.Fatalf("Error opening .enigma file: %v", err)
+    }
+    defer file.Close()
+
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        line := scanner.Text()
+
+        parts := strings.SplitN(line, ":", 2)
+        if len(parts) < 2 {
+            continue
+        }
+        key := strings.TrimSpace(parts[0])
+        value := strings.TrimSpace(parts[1])
+
+        if isValidEnvVarKey(key) {
+            value = strings.ReplaceAll(value, "${{ github.ref_name }}", os.Getenv("GITHUB_REF_NAME"))
+
+            if err := os.Setenv(key, value); err != nil {
+                log.Printf("Failed to set environment variable %s: %v", key, err)
+            } else {
+                fmt.Printf("Set %s to %s\n", key, value)
+            }
+        }
+    }
+
+    if err := scanner.Err(); err != nil {
+        log.Fatalf("Error reading .enigma file: %v", err)
+    }
+}
+
+func isValidEnvVarKey(key string) bool {
+    if len(key) == 0 {
+        return false
+    }
+    for i, r := range key {
+        if (i == 0 && !isLetter(r)) || (i > 0 && !isLetterOrDigitOrUnderscore(r)) {
+            return false
+        }
+    }
+    return true
+}
+
+func isLetter(r rune) bool {
+    return unicode.IsLetter(r) || r == '_'
+}
+
+func isLetterOrDigitOrUnderscore(r rune) bool {
+    return isLetter(r) || unicode.IsDigit(r)
 }
