@@ -70,7 +70,10 @@ inputs:
     description: 'Whether to publish the image'
     required: false
     default: 'false'
-  
+  ENIGMA_ENV_FILE_NAME:
+    description: 'Pass your .enigma__ file name to use specific env file'
+    required: false
+
 runs:
   using: 'docker'
   image: 'docker://ghcr.io/clouddrove/enigma:v0.0.12'
@@ -95,5 +98,6 @@ runs:
     BUILD_ARGS: ${{ inputs.BUILD_ARGS }}
     NO_CACHE: ${{ inputs.NO_CACHE }}
     PUBLISH: ${{ inputs.PUBLISH }}
+    ENIGMA_ENV_FILE_NAME: ${{ inputs.ENIGMA_ENV_FILE_NAME }}
   args:
     - ${{ inputs.command }}
