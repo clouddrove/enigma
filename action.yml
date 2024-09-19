@@ -99,6 +99,7 @@ runs:
     BUILD_ARGS: ${{ inputs.BUILD_ARGS }}
     NO_CACHE: ${{ inputs.NO_CACHE }}
     PUBLISH: ${{ inputs.PUBLISH }}
-    ENIGMA_ENV_FILE_NAME: ${{ inputs.ENIGMA_ENV_FILE_NAME }}
+    # ENIGMA_ENV_FILE_NAME: ${{ inputs.ENIGMA_ENV_FILE_NAME }}
   args:
+    - '-enigma=${{ inputs.enigma_file }}'
     - ${{ inputs.command }}
