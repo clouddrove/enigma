@@ -5,6 +5,9 @@ inputs:
   command:
     description: 'Command to run (bake or publish)'
     required: true
+  enigma_file:
+    description: 'env file to set values in workflow'
+    required: true
   DOCKER_IMAGE:
     description: 'Docker image name'
     required: true
