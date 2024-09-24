@@ -72,7 +72,7 @@ inputs:
     default: 'false'
   ENIGMA_ENV_FILE_NAME:
     description: 'Pass your .enigma__ file name to use specific env file'
-    required: false
+    required: true
 
 runs:
   using: 'docker'
