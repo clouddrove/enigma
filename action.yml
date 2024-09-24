@@ -70,9 +70,6 @@ inputs:
     description: 'Whether to publish the image'
     required: false
     default: 'false'
-  ENIGMA_ENV_FILE_NAME:
-    description: 'Pass your .enigma__ file name to use specific env file'
-    required: true
 
 runs:
   using: 'docker'
@@ -99,6 +96,6 @@ runs:
     BUILD_ARGS: ${{ inputs.BUILD_ARGS }}
     NO_CACHE: ${{ inputs.NO_CACHE }}
     PUBLISH: ${{ inputs.PUBLISH }}
-    ENIGMA_ENV_FILE_NAME: ${{ inputs.ENIGMA_ENV_FILE_NAME }}
   args:
+    - '-enigma=${{ inputs.enigma_file }}'
     - ${{ inputs.command }}
