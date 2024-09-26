@@ -182,15 +182,15 @@ func InstallBinfmt() {
 }
 
 // LoadEnvFromEnigma loads environment variables from the .enigma file.
-func LoadEnvFromEnigma() {
-    if _, err := os.Stat(".enigma"); os.IsNotExist(err) {
-        fmt.Println(".enigma file not found. No variables set.")
+func LoadEnvFromEnigma(filename string) {
+    if _, err := os.Stat(filename); os.IsNotExist(err) {
+        fmt.Printf("%s file not found. No variables set.\n", filename)
         return
     }
 
-    file, err := os.Open(".enigma")
+    file, err := os.Open(filename)
     if err != nil {
-        log.Fatalf("Error opening .enigma file: %v", err)
+        log.Fatalf("Error opening %s file: %v", filename, err)
     }
     defer file.Close()
 
