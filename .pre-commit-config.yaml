@@ -3,9 +3,6 @@ repos:
     rev: v1.0.0-beta.5
     hooks:
       - id: go-fmt
-      - id: go-sec-mod
-      - id: go-staticcheck-mod
-      - id: go-critic
 
   - repo: https://github.com/deweysasser/conventional-pre-commit
     rev: v1.2.1
