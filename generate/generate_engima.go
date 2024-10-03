@@ -2,11 +2,11 @@ package generate
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
-	"io/fs"
 )
 
 // GenerateEnigmaFile extracts environment variables from .go files in the specified directory and writes them to the specified output file path.
