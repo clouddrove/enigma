@@ -1,17 +1,12 @@
 repos:
--   repo: https://github.com/tekwizely/pre-commit-golang
+  - repo: https://github.com/tekwizely/pre-commit-golang
     rev: v1.0.0-beta.5
     hooks:
       - id: go-fmt
-# this hook isn't doing the right thing right now
-#      - id: go-vet
-      - id: go-sec-mod
-      - id: go-staticcheck-mod
-      - id: go-critic
 
-- repo: https://github.com/deweysasser/conventional-pre-commit
-  rev: v1.2.1
-  hooks:
+  - repo: https://github.com/deweysasser/conventional-pre-commit
+    rev: v1.2.1
+    hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
         args: [] # optional: list of Conventional Commits types to allow
