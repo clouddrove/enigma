@@ -13,6 +13,7 @@ var bakeCmd = &cobra.Command{
 	Short:   "To Bake the command",
 	Args:    cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
+		dockerFlag, _ := cmd.Flags().GetBool("d")
 		if dockerFlag {
 			loadDockerEnv(*&enigmaFile)
 			docker.InstallBinfmt()

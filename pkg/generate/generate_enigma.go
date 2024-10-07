@@ -2,62 +2,45 @@ package generate
 
 import (
 	"fmt"
-	"io/fs"
 	"os"
-	"path/filepath"
-	"regexp"
-	"strings"
 )
 
-// GenerateEnigmaFile extracts environment variables from .go files in the specified directory and writes them to the specified output file path.
-func GenerateEnigmaFile(dir string, outputPath string) error {
-	envVars := make(map[string]bool)
+type EnvType string
 
-	absDir, err := filepath.Abs(dir)
-	if err != nil {
-		return fmt.Errorf("failed to get absolute path: %v", err)
-	}
+const (
+	DOCKER EnvType = "DOCKER"
+)
 
-	err = filepath.WalkDir(absDir, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		if !d.IsDir() && strings.HasSuffix(d.Name(), ".go") {
-			data, err := os.ReadFile(path)
-			if err != nil {
-				return err
-			}
+var DOCKER_ENV_VARIABLES = [9]string{
+	"DOCKER_TAG",
+	"NO_CACHE",
+	"BUILD_ARCHITECTURE",
+	"SCAN",
+	"DOCKERFILE_PATH",
+	"BUILD_ARGS",
+	"DOCKER_IMAGE",
+	"CLEANUP",
+	"GITHUB_REF_NAME",
+}
 
-			re := regexp.MustCompile(`os\.Getenv\(["']([^"']+)["']\)`)
-			matches := re.FindAllStringSubmatch(string(data), -1)
-
-			for _, match := range matches {
-				envVars[match[1]] = true
-			}
-		}
-		return nil
-	})
-
-	if err != nil {
-		return fmt.Errorf("error walking directory: %v", err)
-	}
-
+// GenerateEnigmaFile writes the environment variables to the specified output file.
+func GenerateEnigmaFile(outputPath string, envType EnvType) error {
+	// Create or open the output file
 	file, err := os.Create(outputPath)
 	if err != nil {
-		return fmt.Errorf("error creating .enigma file: %v", err)
+		return fmt.Errorf("failed to create file: %w", err)
 	}
 	defer file.Close()
 
-	_, err = file.WriteString("## Docker Variables\n")
-	if err != nil {
-		return fmt.Errorf("error writing to .enigma file: %v", err)
+	// Loop through the environment variables and write each to the file
+	if envType == "DOCKER" {
+		for _, env := range DOCKER_ENV_VARIABLES {
+			_, err := file.WriteString(env + "\n")
+			if err != nil {
+				return fmt.Errorf("failed to write to file: %w", err)
+			}
+		}
 	}
-
-	for envVar := range envVars {
-		value := os.Getenv(envVar)
-		file.WriteString(fmt.Sprintf("%s=%s\n", envVar, value))
-	}
-
-	fmt.Println(".enigma file generated.")
+	fmt.Println("Environment variables successfully written to", outputPath)
 	return nil
 }

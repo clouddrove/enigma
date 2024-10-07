@@ -13,16 +13,13 @@ var initCmd = &cobra.Command{
 	Short:   "To init the command",
 	Args:    cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
+		dockerFlag, _ := cmd.Flags().GetBool("d")
 		if dockerFlag {
-			err := generate.GenerateEnigmaFile("pkg/docker", *&enigmaFile)
+			err := generate.GenerateEnigmaFile(enigmaFile, generate.DOCKER)
 			if err != nil {
 				fmt.Printf("Error generating %s file: %v\n", *&enigmaFile, err)
 				os.Exit(1)
 			}
 		}
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(initCmd)
 }

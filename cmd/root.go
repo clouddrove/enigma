@@ -32,4 +32,6 @@ func Execute() {
 func init() {
 	// Add --enigmafile flag to rootCmd
 	rootCmd.PersistentFlags().StringVar(&enigmaFile, "enigmafile", ".enigma", "Path to the .enigma file")
+	rootCmd.AddCommand(initCmd)
+	initCmd.PersistentFlags().Bool("d", true, "Init for dockerfile")
 }

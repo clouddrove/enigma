@@ -15,6 +15,7 @@ var build_publishCmd = &cobra.Command{
 	Short:   "To build and publish",
 	Args:    cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
+		dockerFlag, _ := cmd.Flags().GetBool("d")
 		if dockerFlag {
 			docker.LoadEnvFromEnigma(*&enigmaFile)
 			docker.InstallBinfmt()
