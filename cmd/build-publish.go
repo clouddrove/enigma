@@ -7,8 +7,6 @@ import (
 	"os"
 )
 
-// This is to define -d functionality
-
 var build_publishCmd = &cobra.Command{
 	Use:     "build-publish",
 	Aliases: []string{"bdpb", "build-p"},
@@ -29,8 +27,4 @@ var build_publishCmd = &cobra.Command{
 			}
 		}
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(publishCmd)
 }

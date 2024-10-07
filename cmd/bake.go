@@ -22,7 +22,3 @@ var bakeCmd = &cobra.Command{
 		}
 	},
 }
-
-func init() {
-	rootCmd.AddCommand(bakeCmd)
-}

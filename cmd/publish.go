@@ -5,8 +5,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// This is to define -d functionality
-
 var publishCmd = &cobra.Command{
 	Use:     "publish",
 	Aliases: []string{"publish"},
@@ -21,8 +19,4 @@ var publishCmd = &cobra.Command{
 			docker.PushDockerImage()
 		}
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(publishCmd)
 }
