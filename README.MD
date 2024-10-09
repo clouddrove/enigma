@@ -133,8 +133,6 @@ The bake command is used to set up and build Docker images.
 
 - Loads the Docker environment.
 
-- Installs the necessary binfmt.
-
 - Builds the Docker image.
 
 - Scans the Docker image for vulnerabilities.
@@ -171,8 +169,6 @@ The publish command is used to tag and push Docker images to a remote repository
 
 - Loads the Docker environment.
 
-- Installs binfmt.
-
 - Tags the Docker image.
 
 - Pushes the Docker image to a registry.
@@ -195,8 +191,6 @@ The build-publish command combines the steps of building, scanning, tagging, and
 
 - **Subcommand:** build-publish
 
-- **Aliases:** bdpb, build-p
-
 - **Description:** Builds, scans, and optionally publishes Docker images.
 
 - **Arguments:** No additional arguments required.
@@ -208,8 +202,6 @@ The build-publish command combines the steps of building, scanning, tagging, and
 **Docker-specific steps:**
 
 - Loads the environment variables from the Enigmafile.
-
-- Installs binfmt.
 
 - Builds and scans the Docker image.
 
