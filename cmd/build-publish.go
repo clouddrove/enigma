@@ -8,14 +8,14 @@ import (
 )
 
 var build_publishCmd = &cobra.Command{
-	Use:     "build-publish",
-	Aliases: []string{"bdpb", "build-p"},
-	Short:   "To build and publish",
-	Args:    cobra.NoArgs,
+	Use:   "build-publish",
+	Short: "To build and publish",
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
+		enigmaFile, _ := cmd.Flags().GetString("enigmafile")
 		dockerFlag, _ := cmd.Flags().GetBool("d")
 		if dockerFlag {
-			docker.LoadEnvFromEnigma(*&enigmaFile)
+			docker.LoadEnvFromEnigma(enigmaFile)
 			docker.InstallBinfmt()
 			docker.BuildDockerImage()
 			docker.ScanDockerImage()

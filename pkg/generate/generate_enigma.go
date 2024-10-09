@@ -20,7 +20,6 @@ var DOCKER_ENV_VARIABLES = [9]string{
 	"BUILD_ARGS=",
 	"DOCKER_IMAGE=",
 	"CLEANUP=",
-	"GITHUB_REF_NAME=",
 }
 
 // GenerateEnigmaFile writes the environment variables to the specified output file.
