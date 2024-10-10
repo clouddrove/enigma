@@ -15,14 +15,10 @@ import (
 func BuildDockerImage() {
 	dockerTag := os.Getenv("DOCKER_TAG")
 	dockerfilePath := os.Getenv("DOCKERFILE_PATH")
-	noCache := os.Getenv("NO_CACHE") == "true"
-	buildArgs := os.Getenv("BUILD_ARGS")
+	noCache := os.Getenv("DOCKER_NO_CACHE") == "true"
+	buildArgs := os.Getenv("DOCKER_BUILD_ARGS")
 	dockerImage := os.Getenv("DOCKER_IMAGE")
-	buildArchitecture := os.Getenv("BUILD_ARCHITECTURE")
-
-	if dockerTag == "" {
-		log.Fatalf("DOCKER_TAG environment variable is not set")
-	}
+	buildArchitecture := os.Getenv("DOCKER_BUILD_ARCHITECTURE")
 
 	if dockerImage == "" {
 		log.Fatalf("DOCKER_IMAGE environment variable is not set")
@@ -32,7 +28,7 @@ func BuildDockerImage() {
 		dockerfilePath = "Dockerfile"
 	}
 
-	args := []string{"build", "-f", dockerfilePath, "-t", dockerImage + ":" + dockerTag, "."}
+	args := []string{"build", "-f", dockerfilePath, "-t", dockerImage, "."}
 
 	if noCache {
 		args = append(args, "--no-cache")
@@ -81,7 +77,7 @@ func getPlatform(architecture string) string {
 // ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
 // It uses the `docker scout` command to scan the image for vulnerabilities.
 func ScanDockerImage() {
-	scan := os.Getenv("SCAN")
+	scan := os.Getenv("DOCKER_SCAN")
 
 	if scan != "true" {
 		fmt.Println("SCAN is not set to true. Skipping Docker image scan.")
@@ -116,6 +112,7 @@ func ScanDockerImage() {
 func TagDockerImage() {
 	dockerImage := os.Getenv("DOCKER_IMAGE")
 	dockerTag := os.Getenv("DOCKER_TAG")
+	finalDockerTag := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
 
 	if dockerImage == "" || dockerTag == "" {
 		log.Fatalf("DOCKER_IMAGE or DOCKER_TAG environment variable is not set")
@@ -123,7 +120,7 @@ func TagDockerImage() {
 
 	fmt.Printf("Tagging Docker image: %s as %s\n", dockerImage, dockerTag)
 
-	cmdTag := exec.Command("docker", "tag", dockerImage, dockerTag)
+	cmdTag := exec.Command("docker", "tag", dockerImage, finalDockerTag)
 	cmdTag.Stdout = os.Stdout
 	cmdTag.Stderr = os.Stderr
 
@@ -138,17 +135,19 @@ func TagDockerImage() {
 // It uses the `docker push` command to upload the image to the registry specified in DOCKER_TAG.
 // Cleanup is performed by default or when explicitly set to "true". It's only disabled when set to "false".
 func PushDockerImage() {
+	dockerImage := os.Getenv("DOCKER_IMAGE")
 	dockerTag := os.Getenv("DOCKER_TAG")
-	cleanup := os.Getenv("CLEANUP")
+	cleanup := os.Getenv("DOCKER_CLEANUP")
+	finalDockerTag := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
 
 	if dockerTag == "" {
 		log.Fatalf("DOCKER_TAG environment variable is not set")
 	}
 
-	cmdPush := exec.Command("docker", "push", dockerTag)
+	cmdPush := exec.Command("docker", "push", finalDockerTag)
 	cmdPush.Stdout = os.Stdout
 	cmdPush.Stderr = os.Stderr
-	fmt.Printf("Pushing Docker image: docker push %s\n", dockerTag)
+	fmt.Printf("Pushing Docker image: docker push %s\n", finalDockerTag)
 	err := cmdPush.Run()
 	if err != nil {
 		log.Fatalf("Error pushing Docker image: %v", err)
@@ -157,10 +156,10 @@ func PushDockerImage() {
 
 	if cleanup != "false" {
 		fmt.Println("Cleanup is enabled. Removing tagged image.")
-		cmdRm := exec.Command("docker", "rmi", dockerTag)
+		cmdRm := exec.Command("docker", "rmi", finalDockerTag)
 		cmdRm.Stdout = os.Stdout
 		cmdRm.Stderr = os.Stderr
-		fmt.Printf("Removing tagged image: docker rmi %s\n", dockerTag)
+		fmt.Printf("Removing tagged image: docker rmi %s\n", finalDockerTag)
 		if err := cmdRm.Run(); err != nil {
 			log.Printf("Error removing tagged image: %v", err)
 		}
