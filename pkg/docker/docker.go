@@ -15,10 +15,10 @@ import (
 func BuildDockerImage() {
 	dockerTag := os.Getenv("DOCKER_TAG")
 	dockerfilePath := os.Getenv("DOCKERFILE_PATH")
-	noCache := os.Getenv("NO_CACHE") == "true"
-	buildArgs := os.Getenv("BUILD_ARGS")
+	noCache := os.Getenv("DOCKER_NO_CACHE") == "true"
+	buildArgs := os.Getenv("DOCKER_BUILD_ARGS")
 	dockerImage := os.Getenv("DOCKER_IMAGE")
-	buildArchitecture := os.Getenv("BUILD_ARCHITECTURE")
+	buildArchitecture := os.Getenv("DOCKER_BUILD_ARCHITECTURE")
 
 	if dockerImage == "" {
 		log.Fatalf("DOCKER_IMAGE environment variable is not set")
@@ -77,7 +77,7 @@ func getPlatform(architecture string) string {
 // ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
 // It uses the `docker scout` command to scan the image for vulnerabilities.
 func ScanDockerImage() {
-	scan := os.Getenv("SCAN")
+	scan := os.Getenv("DOCKER_SCAN")
 
 	if scan != "true" {
 		fmt.Println("SCAN is not set to true. Skipping Docker image scan.")
@@ -137,7 +137,7 @@ func TagDockerImage() {
 func PushDockerImage() {
 	dockerImage := os.Getenv("DOCKER_IMAGE")
 	dockerTag := os.Getenv("DOCKER_TAG")
-	cleanup := os.Getenv("CLEANUP")
+	cleanup := os.Getenv("DOCKER_CLEANUP")
 	finalDockerTag := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
 
 	if dockerTag == "" {

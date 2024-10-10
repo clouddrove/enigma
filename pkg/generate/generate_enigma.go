@@ -15,11 +15,10 @@ var DOCKER_ENV_VARIABLES = [9]string{
 	"DOCKERFILE_PATH=",
 	"DOCKER_IMAGE=",
 	"DOCKER_TAG=",
-	"BUILD_ARCHITECTURE=",
-	"NO_CACHE=",
-	"SCAN=",
-	"BUILD_ARGS=",
-	"CLEANUP=",
+	"DOCKER_BUILD_ARCHITECTURE=",
+	"DOCKER_SCAN=",
+	"DOCKER_BUILD_ARGS=",
+	"DOCKER_CLEANUP=",
 }
 
 // GenerateEnigmaFile writes the environment variables to the specified output file.

@@ -15,7 +15,7 @@ var build_publishCmd = &cobra.Command{
 		enigmaFile, _ := cmd.Flags().GetString("enigmafile")
 		dockerFlag, _ := cmd.Flags().GetBool("d")
 		if dockerFlag {
-			docker.LoadEnvFromEnigma(enigmaFile)
+			loadDockerEnv(enigmaFile)
 			docker.InstallBinfmt()
 			docker.BuildDockerImage()
 			docker.ScanDockerImage()

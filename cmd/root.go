@@ -58,7 +58,7 @@ func Execute() {
 }
 
 func init() {
-	// Add --enigmafile flag to rootCmd [usuage] enigma --enigmafile [default .enigma ] can be set to any new.
+	// Add to the root command
 	rootCmd.AddCommand(initCmd)
 	rootCmd.AddCommand(bakeCmd)
 	rootCmd.AddCommand(publishCmd)

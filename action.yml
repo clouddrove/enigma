@@ -14,7 +14,7 @@ inputs:
   DOCKER_TAG:
     description: 'Docker image tag'
     required: true
-  CLEANUP:
+  DOCKER_CLEANUP:
     description: 'Cleanup after push (true or false)'
     required: false
     default: 'false'
@@ -58,14 +58,14 @@ inputs:
     description: 'Path to the Dockerfile'
     required: false
     default: './Dockerfile'
-  BUILD_ARCHITECTURE:
+  DOCKER_BUILD_ARCHITECTURE:
     description: 'Build Architecture'
     required: false
     default: 'amd64'
-  BUILD_ARGS:
+  DOCKER_BUILD_ARGS:
     description: 'Additional build arguments for Docker build'
     required: false
-  NO_CACHE:
+  DOCKER_NO_CACHE:
     description: 'Set to true to disable Docker cache'
     required: false
     default: 'false'
