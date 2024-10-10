@@ -12,13 +12,13 @@ const (
 )
 
 var DOCKER_ENV_VARIABLES = [9]string{
-	"DOCKER_TAG=",
-	"NO_CACHE=",
-	"BUILD_ARCHITECTURE=",
-	"SCAN=",
 	"DOCKERFILE_PATH=",
-	"BUILD_ARGS=",
 	"DOCKER_IMAGE=",
+	"DOCKER_TAG=",
+	"BUILD_ARCHITECTURE=",
+	"NO_CACHE=",
+	"SCAN=",
+	"BUILD_ARGS=",
 	"CLEANUP=",
 }
 
