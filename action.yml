@@ -99,5 +99,5 @@ runs:
     DOCKER_NO_CACHE: ${{ inputs.DOCKER_NO_CACHE }}
     PUBLISH: ${{ inputs.PUBLISH }}
   args:
-    - '--enigmafile=${{ inputs.enigma_file }}'
+    - '--enigmafile ${{ inputs.enigma_file }}'
     - ${{ inputs.command }}
