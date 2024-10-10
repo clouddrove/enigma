@@ -100,4 +100,4 @@ runs:
     PUBLISH: ${{ inputs.PUBLISH }}
   args:
     - ${{ inputs.command }}
-    - '-enigmafile ${{ inputs.enigma_file }}'
+    - '--enigmafile ${{ inputs.enigma_file }}'
