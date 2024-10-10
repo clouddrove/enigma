@@ -99,5 +99,5 @@ runs:
     NO_CACHE: ${{ inputs.NO_CACHE }}
     PUBLISH: ${{ inputs.PUBLISH }}
   args:
-    - ${{ inputs.command }}
     - '--enigmafile ${{ inputs.enigma_file }}'
+    - ${{ inputs.command }}
