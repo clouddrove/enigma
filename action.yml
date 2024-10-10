@@ -3,10 +3,10 @@ description: 'Builds, scans, tags, and pushes Docker images using the Enigma too
 
 inputs:
   command:
-    description: 'Command to run (bake or publish)'
+    description: 'Command to run (bake, build-publish, or publish)'
     required: true
   enigma_file:
-    description: 'env file to set values in workflow'
+    description: 'Path to the .enigma file to set values in the workflow'
     required: true
   DOCKER_IMAGE:
     description: 'Docker image name'
@@ -36,30 +36,30 @@ inputs:
   DOCKER_PASSWORD:
     description: 'Docker Hub password'
     required: false
-  TOKEN: 
+  TOKEN:
     description: 'GitHub Token'
     required: false
-  GITHUB_USERNAME: 
+  GITHUB_USERNAME:
     description: 'GitHub Username'
     required: false
   AZURE_REGISTRY_NAME:
     description: 'Azure Registry name.'
     required: false
   AZURE_CLIENT_ID:
-    description: 'Client ID'
+    description: 'Azure Client ID'
     required: false
   AZURE_TENANT_ID:
-    description: 'Tenant ID'
+    description: 'Azure Tenant ID'
     required: false
   AZURE_CLIENT_SECRET:
-    description: 'Client Secret'
+    description: 'Azure Client Secret'
     required: false
   DOCKERFILE_PATH:
     description: 'Path to the Dockerfile'
     required: false
     default: './Dockerfile'
   DOCKER_BUILD_ARCHITECTURE:
-    description: 'Build Architecture'
+    description: 'Docker Build Architecture'
     required: false
     default: 'amd64'
   DOCKER_BUILD_ARGS:
@@ -84,7 +84,6 @@ runs:
     AWS_REGION: ${{ inputs.AWS_REGION }}
     GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
     GCP_REGION: ${{ inputs.GCP_REGION }}
-    CLEANUP: ${{ inputs.CLEANUP }}
     DOCKER_USERNAME: ${{ inputs.DOCKER_USERNAME }}
     DOCKER_PASSWORD: ${{ inputs.DOCKER_PASSWORD }}
     TOKEN: ${{ inputs.TOKEN }}
@@ -94,10 +93,13 @@ runs:
     AZURE_TENANT_ID: ${{ inputs.AZURE_TENANT_ID }}
     AZURE_CLIENT_SECRET: ${{ inputs.AZURE_CLIENT_SECRET }}
     DOCKERFILE_PATH: ${{ inputs.DOCKERFILE_PATH }}
-    BUILD_ARCHITECTURE: ${{ inputs.BUILD_ARCHITECTURE }}
-    BUILD_ARGS: ${{ inputs.BUILD_ARGS }}
-    NO_CACHE: ${{ inputs.NO_CACHE }}
+    DOCKER_BUILD_ARCHITECTURE: ${{ inputs.DOCKER_BUILD_ARCHITECTURE }}
+    DOCKER_BUILD_ARGS: ${{ inputs.DOCKER_BUILD_ARGS }}
+    DOCKER_NO_CACHE: ${{ inputs.DOCKER_NO_CACHE }}
     PUBLISH: ${{ inputs.PUBLISH }}
+    DOCKER_CLEANUP: ${{ inputs.DOCKER_CLEANUP }}
+
   args:
-    - '--enigmafile ${{ inputs.enigma_file }}'
-    - ${{ inputs.command }}
+    - '--enigmafile'
+    - '${{ inputs.enigma_file }}'
+    - '${{ inputs.command }}'
