@@ -69,10 +69,6 @@ inputs:
     description: 'Set to true to disable Docker cache'
     required: false
     default: 'false'
-  PUBLISH:
-    description: 'Whether to publish the image'
-    required: false
-    default: 'false'
 
 runs:
   using: 'docker'

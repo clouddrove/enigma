@@ -24,7 +24,7 @@ Usage:
 
 Available Commands:
   bake          To Bake the command
-  build-publish To build and publish
+  bake-publish  To bake and publish
   completion    Generate the autocompletion script for the specified shell
   help          Help about any command
   init          To init the command
@@ -62,12 +62,12 @@ func init() {
 	rootCmd.AddCommand(initCmd)
 	rootCmd.AddCommand(bakeCmd)
 	rootCmd.AddCommand(publishCmd)
-	rootCmd.AddCommand(build_publishCmd)
+	rootCmd.AddCommand(bake_publishCmd)
 
 	// Add Optional --enigmafile to the following commands
 	addEnigmaFileFlag(bakeCmd)
 	addEnigmaFileFlag(publishCmd)
-	addEnigmaFileFlag(build_publishCmd)
+	addEnigmaFileFlag(bake_publishCmd)
 
 	// Add Optional --f to the following commands
 	addFilenameForInitFlag(initCmd)
@@ -76,5 +76,5 @@ func init() {
 	addDockerFlag(initCmd)
 	addDockerFlag(bakeCmd)
 	addDockerFlag(publishCmd)
-	addDockerFlag(build_publishCmd)
+	addDockerFlag(bake_publishCmd)
 }
