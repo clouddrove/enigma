@@ -211,19 +211,10 @@ The build-publish command combines the steps of building, scanning, tagging, and
 
 ```bash
 
-export PUBLISH=true
-
-enigma build-publish --d
+enigma bake-publish --d
 
 ```
 
-**Output if PUBLISH is set to false:**
-
-```bash
-
-Publish is set to false. Skipping publish step.
-
-```
 
 ## Options
 
@@ -237,7 +228,7 @@ Usage:
 
 Available Commands:
   bake          To Bake the command
-  build-publish To build and publish
+  bake-publish  To bake and publish
   completion    Generate the autocompletion script for the specified shell
   help          Help about any command
   init          To init the command
