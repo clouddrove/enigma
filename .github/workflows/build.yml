@@ -1,9 +1,9 @@
+name: Build
 on:
   push:
     branches:
       - "**"
 
-name: Build
 env:
   GO_VERSION: 1.23
 
@@ -17,28 +17,22 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: ${{env.GO_VERSION}}
+          go-version: ${{ env.GO_VERSION }}
 
       - name: Vet
         run: make vet
 
-      - name: Test
-        run: make test
+      - name: Test with coverage
+        run: go test -coverprofile=coverage.out ./...
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # Ensure the token is referenced
+          file: ./coverage.out
+          flags: unittests
+          name: Codecov
+          fail_ci_if_error: true
 
       - name: Build
         run: make
-
-  format:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{env.GO_VERSION}}
-
-      - run: go fmt ./...
-
-      # - name: Verify No Differences after format
-      #   run: test -z "$(git diff)"
