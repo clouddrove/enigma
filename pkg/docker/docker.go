@@ -28,7 +28,7 @@ func BuildDockerImage() {
 		dockerfilePath = "Dockerfile"
 	}
 
-	args := []string{"build", "-f", dockerfilePath, "-t", dockerImage, "."}
+	args := []string{"buildx", "build", "--file", dockerfilePath, "--tag", dockerImage, "."}
 
 	if noCache {
 		args = append(args, "--no-cache")
@@ -60,18 +60,22 @@ func BuildDockerImage() {
 	TagDockerImage()
 }
 
-func getPlatform(architecture string) string {
-	switch strings.ToLower(architecture) {
-	case "amd64":
-		return "linux/amd64"
-	case "arm64":
-		return "linux/arm64"
-	case "arm":
-		return "linux/arm/v7"
-	default:
-		log.Printf("Unsupported architecture: %s. Using default platform.", architecture)
-		return ""
+// getPlatforms returns the platforms string for multi-arch builds.
+func getPlatform(architectures string) string {
+	platforms := []string{}
+	for _, arch := range strings.Split(architectures, ",") {
+		switch strings.ToLower(strings.TrimSpace(arch)) {
+		case "amd64":
+			platforms = append(platforms, "linux/amd64")
+		case "arm64":
+			platforms = append(platforms, "linux/arm64")
+		case "arm":
+			platforms = append(platforms, "linux/arm/v7")
+		default:
+			log.Printf("Unsupported architecture: %s. Skipping.", arch)
+		}
 	}
+	return strings.Join(platforms, ",")
 }
 
 // ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
@@ -234,6 +238,19 @@ func isValidEnvVarKey(key string) bool {
 		}
 	}
 	return true
+}
+
+func CreateBuildxInstance() error {
+	cmd := exec.Command("docker", "buildx", "create", "--use")
+
+	// Run the command and capture the output
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("failed to create Buildx instance: %w\nOutput: %s", err, string(output))
+	}
+
+	fmt.Println("Buildx instance created and set to use.")
+	return nil
 }
 
 func isLetter(r rune) bool {

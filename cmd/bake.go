@@ -16,6 +16,7 @@ var bakeCmd = &cobra.Command{
 		dockerFlag, _ := cmd.Flags().GetBool("d")
 		if dockerFlag {
 			loadDockerEnv(enigmaFile)
+			docker.CreateBuildxInstance()
 			docker.InstallBinfmt()
 			docker.BuildDockerImage()
 			docker.ScanDockerImage()
