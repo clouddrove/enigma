@@ -10,3 +10,4 @@ func TestMainFunction(t *testing.T) {
 	// Since main does not return any value, there are no assertions to make.
 	// You could test side effects if applicable.
 }
+
