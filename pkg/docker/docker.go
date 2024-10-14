@@ -28,7 +28,7 @@ func BuildDockerImage() {
 		dockerfilePath = "Dockerfile"
 	}
 
-	args := []string{"buildx", "build", "--file", dockerfilePath, "--tag", dockerImage, "."}
+	args := []string{"build", "-f", dockerfilePath, "-t", dockerImage, "."}
 
 	if noCache {
 		args = append(args, "--no-cache")
@@ -60,22 +60,18 @@ func BuildDockerImage() {
 	TagDockerImage()
 }
 
-// getPlatforms returns the platforms string for multi-arch builds.
-func getPlatform(architectures string) string {
-	platforms := []string{}
-	for _, arch := range strings.Split(architectures, ",") {
-		switch strings.ToLower(strings.TrimSpace(arch)) {
-		case "amd64":
-			platforms = append(platforms, "linux/amd64")
-		case "arm64":
-			platforms = append(platforms, "linux/arm64")
-		case "arm":
-			platforms = append(platforms, "linux/arm/v7")
-		default:
-			log.Printf("Unsupported architecture: %s. Skipping.", arch)
-		}
+func getPlatform(architecture string) string {
+	switch strings.ToLower(architecture) {
+	case "amd64":
+		return "linux/amd64"
+	case "arm64":
+		return "linux/arm64"
+	case "arm":
+		return "linux/arm/v7"
+	default:
+		log.Printf("Unsupported architecture: %s. Using default platform.", architecture)
+		return ""
 	}
-	return strings.Join(platforms, ",")
 }
 
 // ScanDockerImage performs a security scan of the Docker image and saves the report in SARIF format.
@@ -251,6 +247,47 @@ func CreateBuildxInstance() error {
 
 	fmt.Println("Buildx instance created and set to use.")
 	return nil
+}
+
+func BuildDockerImageAndPublishMultiArch() {
+	dockerTag := os.Getenv("DOCKER_TAG")
+	dockerfilePath := os.Getenv("DOCKERFILE_PATH")
+	noCache := os.Getenv("DOCKER_NO_CACHE") == "true"
+	buildArgs := os.Getenv("DOCKER_BUILD_ARGS")
+	dockerImage := os.Getenv("DOCKER_IMAGE")
+
+	if dockerImage == "" {
+		log.Fatalf("DOCKER_IMAGE environment variable is not set")
+	}
+
+	if dockerfilePath == "" {
+		dockerfilePath = "Dockerfile"
+	}
+
+	fullImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
+
+	args := []string{"buildx", "build", "--push", "-f", dockerfilePath, "-t", fullImageName, "--platform linux/amd64,linux/arm64", "."}
+
+	if noCache {
+		args = append(args, "--no-cache")
+	}
+
+	if buildArgs != "" {
+		for _, arg := range strings.Split(buildArgs, ",") {
+			args = append(args, "--build-arg", strings.TrimSpace(arg))
+		}
+	}
+
+	cmd := exec.Command("docker", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Printf("Building and Pushing Docker image: %s:%s\n", dockerImage, dockerTag)
+	if err := cmd.Run(); err != nil {
+		log.Fatalf("Error building Docker image: %v", err)
+	}
+
+	fmt.Println("Building and Pushing completed.")
 }
 
 func isLetter(r rune) bool {
