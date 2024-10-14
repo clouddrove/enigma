@@ -3,7 +3,7 @@
     Enigma
 </h1>
 
-[![codecov](https://codecov.io/gh/sarthaknimbalkar/enigma/branch/main/graph/badge.svg)](https://codecov.io/gh/sarthaknimbalkar/enigma)
+[![codecov](https://codecov.io/github/clouddrove/enigma/graph/badge.svg?token=W8GH1R8TKV)](https://codecov.io/github/clouddrove/enigma)
 
 <p align="center">
 	<a href="https://goreportcard.com/report/github.com/clouddrove/enigma">
