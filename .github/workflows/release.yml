@@ -25,6 +25,9 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
 
+      - name: Format Code with go fmt
+        run: go fmt ./...
+
       - name: Test with coverage
         run: go test -coverprofile=coverage.out ./...
 
