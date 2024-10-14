@@ -19,6 +19,9 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
 
+      - name: Format Code with go fmt
+        run: go fmt ./...
+
       - name: Vet
         run: make vet
 
