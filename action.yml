@@ -69,6 +69,10 @@ inputs:
     description: 'Set to true to disable Docker cache'
     required: false
     default: 'false'
+  DOCKER_MULTI_ARCH_BUILD:
+    description: 'To build and publish docker multi architecture image'
+    required: false
+    default: 'false'
 
 runs:
   using: 'docker'
