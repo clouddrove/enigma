@@ -266,7 +266,7 @@ func BuildDockerImageAndPublishMultiArch() {
 
 	fullImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
 
-	args := []string{"buildx", "build", "--platform linux/amd64,linux/arm64", "--push", "-f", dockerfilePath, "-t", fullImageName, "."}
+	args := []string{"buildx", "build", "--push", "-f", dockerfilePath, "--tag", fullImageName, "--platform", "linux/amd64,linux/arm64", "."}
 
 	if noCache {
 		args = append(args, "--no-cache")
