@@ -3,6 +3,8 @@
     Enigma
 </h1>
 
+[![codecov](https://codecov.io/github/clouddrove/enigma/graph/badge.svg?token=W8GH1R8TKV)](https://codecov.io/github/clouddrove/enigma)
+
 <p align="center">
 	<a href="https://goreportcard.com/report/github.com/clouddrove/enigma">
 		<img alt="Go Report Status" src="https://goreportcard.com/badge/github.com/clouddrove/enigma">
