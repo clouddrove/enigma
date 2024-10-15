@@ -69,10 +69,14 @@ inputs:
     description: 'Set to true to disable Docker cache'
     required: false
     default: 'false'
+  DOCKER_MULTI_ARCH_BUILD:
+    description: 'To build and publish docker multi architecture image'
+    required: false
+    default: 'false'
 
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/clouddrove/enigma:v0.0.15'
+  image: 'docker://ghcr.io/clouddrove/enigma:v0.0.16'
   env:
     DOCKER_IMAGE: ${{ inputs.DOCKER_IMAGE }}
     DOCKER_TAG: ${{ inputs.DOCKER_TAG }}
