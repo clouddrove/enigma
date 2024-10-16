@@ -236,6 +236,60 @@ func isValidEnvVarKey(key string) bool {
 	return true
 }
 
+func CreateBuildxInstance() error {
+	cmd := exec.Command("docker", "buildx", "create", "--use")
+
+	// Run the command and capture the output
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("failed to create Buildx instance: %w\nOutput: %s", err, string(output))
+	}
+
+	fmt.Println("Buildx instance created and set to use.")
+	return nil
+}
+
+func BuildDockerImageAndPublishMultiArch() {
+	dockerTag := os.Getenv("DOCKER_TAG")
+	dockerfilePath := os.Getenv("DOCKERFILE_PATH")
+	noCache := os.Getenv("DOCKER_NO_CACHE") == "true"
+	buildArgs := os.Getenv("DOCKER_BUILD_ARGS")
+	dockerImage := os.Getenv("DOCKER_IMAGE")
+
+	if dockerImage == "" {
+		log.Fatalf("DOCKER_IMAGE environment variable is not set")
+	}
+
+	if dockerfilePath == "" {
+		dockerfilePath = "Dockerfile"
+	}
+
+	fullImageName := fmt.Sprintf("%s:%s", dockerImage, dockerTag)
+
+	args := []string{"buildx", "build", "--push", "-f", dockerfilePath, "--tag", fullImageName, "--platform", "linux/amd64,linux/arm64", "."}
+
+	if noCache {
+		args = append(args, "--no-cache")
+	}
+
+	if buildArgs != "" {
+		for _, arg := range strings.Split(buildArgs, ",") {
+			args = append(args, "--build-arg", strings.TrimSpace(arg))
+		}
+	}
+
+	cmd := exec.Command("docker", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Printf("Building and Pushing Docker image: %s:%s\n", dockerImage, dockerTag)
+	if err := cmd.Run(); err != nil {
+		log.Fatalf("Error building Docker image: %v", err)
+	}
+
+	fmt.Println("Building and Pushing completed.")
+}
+
 func isLetter(r rune) bool {
 	return unicode.IsLetter(r) || r == '_'
 }
