@@ -71,7 +71,7 @@ sudo ln -s enigma /usr/local/bin/enigma
 ls -l /usr/local/bin/enigma
 ```
 
-## Quick start for Docker
+## Quick start
 
 ### Overview
 
