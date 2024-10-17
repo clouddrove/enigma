@@ -2,7 +2,7 @@ name: docs
 on:
   push:
     branches:
-      - main
+      - docs
 permissions:
   contents: write
 jobs:
@@ -25,4 +25,7 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - run: pip install mkdocs-material
-      - run: mkdocs gh-deploy --force
+
+      - name: Deploy Documentation
+        working-directory: ./docs/en  # Specify your documentation directory here
+        run: mkdocs gh-deploy --force
