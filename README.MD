@@ -66,7 +66,7 @@ jobs:
         uses: clouddrove/enigma@v0.0.17
         with:
           command: 'publish'  # or 'bake' for building only
-          enigma_file: './path/to/your/enigma.yml'
+          enigma_file: './path/to/your/.enigma'
           DOCKER_IMAGE: 'your-image-name'
           DOCKER_TAG: 'latest'
           # Additional parameters as needed
@@ -137,7 +137,7 @@ jobs:
 - uses: clouddrove/enigma@v0.0.17
   with:
     command: 'publish'
-    enigma_file: './enigma.yml'
+    enigma_file: './.enigma'
     DOCKER_IMAGE: 'myapp'
     DOCKER_TAG: 'v1.0.0'
 ```
@@ -147,7 +147,7 @@ jobs:
 - uses: clouddrove/enigma@v0.0.17
   with:
     command: 'publish'
-    enigma_file: './enigma.yml'
+    enigma_file: './.enigma'
     DOCKER_IMAGE: 'myapp'
     DOCKER_TAG: 'v1.0.0'
     DOCKER_MULTI_ARCH_BUILD: 'true'
@@ -159,7 +159,7 @@ jobs:
 - uses: clouddrove/enigma@v0.0.17
   with:
     command: 'publish'
-    enigma_file: './enigma.yml'
+    enigma_file: './.enigma'
     DOCKER_IMAGE: 'myapp'
     DOCKER_TAG: 'v1.0.0'
     AWS_REGION: 'us-west-2'
@@ -171,15 +171,15 @@ jobs:
 The `enigma_file` should contain your workflow-specific configurations. Example structure:
 
 ```yaml
-version: '1.0'
-settings:
-  registry:
-    type: 'ecr'  # or 'gcr', 'acr', 'dockerhub', 'ghcr'
-  build:
-    context: '.'
-    dockerfile: 'Dockerfile'
-    args:
-      VERSION: '1.0.0'
+DOCKERFILE_PATH=
+DOCKER_IMAGE=
+DOCKER_TAG=
+DOCKER_BUILD_ARCHITECTURE=
+DOCKER_SCAN=
+DOCKER_BUILD_ARGS=
+DOCKER_NOCACHE=
+DOCKER_CLEANUP=
+DOCKER_MULTI_ARCH_BUILD=
 ```
 
 ## Notes
