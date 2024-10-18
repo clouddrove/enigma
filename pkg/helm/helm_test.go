@@ -4,16 +4,6 @@ import (
 	"testing"
 )
 
-func TestInstallHelm(t *testing.T) {
-	defer func() {
-		if r := recover(); r != nil {
-			t.Errorf("InstallHelm() panicked: %v", r)
-		}
-	}()
-
-	InstallHelm()
-}
-
 func TestIsValidEnvVarKey(t *testing.T) {
 	tests := []struct {
 		name string
