@@ -49,5 +49,6 @@ RUN chmod +x enigma
 # Add executable permissions to the entrypoint script
 RUN chmod +x /go/src/app/entrypoint.sh
 RUN chmod +x entrypoint.sh
+
 # Set entrypoint to the shell script
 ENTRYPOINT ["/go/src/app/entrypoint.sh"]
