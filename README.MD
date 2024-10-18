@@ -170,7 +170,7 @@ jobs:
 
 The `enigma_file` should contain your workflow-specific configurations. Example structure:
 
-```yaml
+```
 DOCKERFILE_PATH=
 DOCKER_IMAGE=
 DOCKER_TAG=
