@@ -174,3 +174,25 @@ func isLetter(r rune) bool {
 func isLetterOrDigitOrUnderscore(r rune) bool {
 	return isLetter(r) || unicode.IsDigit(r)
 }
+
+func isValidEnvVarKey(key string) bool {
+	if key == "" {
+		return false
+	}
+
+	runes := []rune(key)
+
+	// First character must be a letter or underscore
+	if !isLetter(runes[0]) {
+		return false
+	}
+
+	// Rest of the characters must be letters, digits, or underscores
+	for _, r := range runes[1:] {
+		if !isLetterOrDigitOrUnderscore(r) {
+			return false
+		}
+	}
+
+	return true
+}
