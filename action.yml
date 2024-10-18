@@ -1,5 +1,5 @@
-name: 'Enigma Docker Build and Publish'
-description: 'Builds, scans, tags, and pushes Docker images using the Enigma tool'
+name: 'Enigma Workflow.'
+description: 'UnComplicate your workflows, with Enigma'
 
 inputs:
   command:
