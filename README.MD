@@ -25,9 +25,6 @@
 <a href='https://facebook.com/sharer/sharer.php?u=https://github.com/clouddrove/enigma'>
   <img title="Share on Facebook" src="https://user-images.githubusercontent.com/50652676/62817743-4f64cb80-bb59-11e9-90c7-b057252ded50.png" />
 </a>
-<a href='https://www.instagram.com/cloud_drove?igsh=cHJqaDY3bGtnYmh3' title="Follow On Instagram">
-  <img src="https://github.com/gauravghongde/social-icons/blob/master/SVG/Color/Instagram.svg" width="23" height="23" />
-</a>
 <a href='https://www.linkedin.com/shareArticle?mini=true&title=enigma&url=https://github.com/clouddrove/enigma'>
   <img title="Share on LinkedIn" src="https://user-images.githubusercontent.com/50652676/62817742-4e339e80-bb59-11e9-87b9-a1f68cae1049.png" />
 </a>
@@ -35,6 +32,166 @@
   <img title="Share on Twitter" src="https://user-images.githubusercontent.com/50652676/62817740-4c69db00-bb59-11e9-8a79-3580fbbf6d5c.png" />
 </a>
 </p>
+
+# Enigma Workflow
+
+Enigma Workflow is a GitHub Action designed to simplify and streamline your workflows. It provides a unified interface for building, tagging, and publishing Docker images across multiple cloud platforms including AWS, GCP, Azure, and Docker Hub.
+
+## Overview
+
+The workflow automates the process of building and publishing Docker images with support for:
+- Multi-architecture builds
+- Custom build arguments
+- Cache control
+- Multiple registry destinations
+- Post-push cleanup
+
+## Usage
+
+To use this action in your workflow, create a `.github/workflows/docker.yml` file with the following structure:
+
+```yaml
+name: Docker Build and Publish
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and Push Docker Image
+        uses: clouddrove/enigma@v0.0.17
+        with:
+          command: 'publish'  # or 'bake' for building only
+          enigma_file: './path/to/your/.enigma'
+          DOCKER_IMAGE: 'your-image-name'
+          DOCKER_TAG: 'latest'
+          # Additional parameters as needed
+```
+
+## Input Parameters
+
+### Required Parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `command` | Workflow command to execute. Options: `bake` (build only) or `publish` (build and publish) |
+| `enigma_file` | Path to the Enigma configuration file |
+| `DOCKER_IMAGE` | Name of the Docker image to build |
+| `DOCKER_TAG` | Tag to apply to the Docker image |
+
+### Optional Parameters
+
+#### Docker Build Configuration
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `DOCKERFILE_PATH` | Path to the Dockerfile | `./Dockerfile` |
+| `DOCKER_BUILD_ARCHITECTURE` | Target build architecture | `amd64` |
+| `DOCKER_BUILD_ARGS` | Additional Docker build arguments | |
+| `DOCKER_NO_CACHE` | Disable Docker build cache | `false` |
+| `DOCKER_MULTI_ARCH_BUILD` | Enable multi-architecture builds | `false` |
+| `DOCKER_CLEANUP` | Remove local images after push | `false` |
+
+#### Registry Credentials
+
+##### AWS ECR
+| Parameter | Description |
+|-----------|-------------|
+| `AWS_REGION` | AWS region for ECR |
+| `AWS_ACCOUNT_ID` | AWS account ID |
+
+##### Google Cloud Platform
+| Parameter | Description |
+|-----------|-------------|
+| `GCP_PROJECT_ID` | GCP project identifier |
+| `GCP_REGION` | GCP region for Container Registry |
+
+##### Azure Container Registry
+| Parameter | Description |
+|-----------|-------------|
+| `AZURE_REGISTRY_NAME` | Name of Azure Container Registry |
+| `AZURE_CLIENT_ID` | Azure service principal client ID |
+| `AZURE_TENANT_ID` | Azure tenant ID |
+| `AZURE_CLIENT_SECRET` | Azure service principal secret |
+
+##### Docker Hub
+| Parameter | Description |
+|-----------|-------------|
+| `DOCKER_USERNAME` | Docker Hub username |
+| `DOCKER_PASSWORD` | Docker Hub password/token |
+
+##### GitHub Container Registry
+| Parameter | Description |
+|-----------|-------------|
+| `TOKEN` | GitHub personal access token |
+| `GITHUB_USERNAME` | GitHub username |
+
+## Examples
+
+### Basic Usage
+```yaml
+- uses: clouddrove/enigma@v0.0.17
+  with:
+    command: 'publish'
+    enigma_file: './.enigma'
+    DOCKER_IMAGE: 'myapp'
+    DOCKER_TAG: 'v1.0.0'
+```
+
+### Multi-Architecture Build
+```yaml
+- uses: clouddrove/enigma@v0.0.17
+  with:
+    command: 'publish'
+    enigma_file: './.enigma'
+    DOCKER_IMAGE: 'myapp'
+    DOCKER_TAG: 'v1.0.0'
+    DOCKER_MULTI_ARCH_BUILD: 'true'
+    DOCKER_BUILD_ARCHITECTURE: 'linux/amd64,linux/arm64'
+```
+
+### Publishing to AWS ECR
+```yaml
+- uses: clouddrove/enigma@v0.0.17
+  with:
+    command: 'publish'
+    enigma_file: './.enigma'
+    DOCKER_IMAGE: 'myapp'
+    DOCKER_TAG: 'v1.0.0'
+    AWS_REGION: 'us-west-2'
+    AWS_ACCOUNT_ID: '${{ secrets.AWS_ACCOUNT_ID }}'
+```
+
+## Enigma Configuration File
+
+The `enigma_file` should contain your workflow-specific configurations. Example structure:
+
+```
+DOCKERFILE_PATH=
+DOCKER_IMAGE=
+DOCKER_TAG=
+DOCKER_BUILD_ARCHITECTURE=
+DOCKER_SCAN=
+DOCKER_BUILD_ARGS=
+DOCKER_NOCACHE=
+DOCKER_CLEANUP=
+DOCKER_MULTI_ARCH_BUILD=
+```
+
+## Notes
+
+1. For security reasons, always use GitHub Secrets for sensitive information like credentials and tokens.
+2. When using multiple registries, ensure all required credentials are provided.
+3. The `bake` command will only build the image without publishing.
+4. Enable `DOCKER_CLEANUP` to automatically remove local images after successful push.
+
+## Support
+
+For issues and feature requests, please create an issue in the [CloudDrove/Enigma](https://github.com/clouddrove/enigma) repository.
 
 
 ## Installation
