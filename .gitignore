@@ -28,3 +28,5 @@ go.work.sum
 
 #for intellij
 .idea
+
+docs/.venv
