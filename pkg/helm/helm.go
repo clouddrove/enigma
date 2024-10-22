@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -165,6 +166,202 @@ func LoadEnvFromHelmFile(filename string) {
 	if err := scanner.Err(); err != nil {
 		log.Fatalf("Error reading .helm file: %v", err)
 	}
+}
+
+package helm
+
+import (
+	"bufio"
+	"fmt"
+	"log"
+	"os"
+	"os/exec"
+	"strconv"
+	"strings"
+	"unicode"
+)
+
+// Previous functions remain the same...
+
+// ListHelmReleaseHistory lists the revision history for a Helm release
+func ListHelmReleaseHistory(releaseName, namespace string) error {
+	if releaseName == "" {
+		return fmt.Errorf("release name is required")
+	}
+
+	args := []string{"history", releaseName}
+	if namespace != "" {
+		args = append(args, "--namespace", namespace)
+	}
+
+	cmd := exec.Command("helm", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Printf("Fetching revision history for release: %s in namespace: %s\n", releaseName, namespace)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to get release history: %v", err)
+	}
+
+	return nil
+}
+
+// RollbackHelmRelease rolls back a Helm release to a specific revision
+func RollbackHelmRelease(releaseName string, revision int, namespace string) error {
+	if releaseName == "" {
+		return fmt.Errorf("release name is required")
+	}
+
+	args := []string{"rollback", releaseName, strconv.Itoa(revision)}
+	if namespace != "" {
+		args = append(args, "--namespace", namespace)
+	}
+
+	// Add wait flag to ensure rollback completes
+	args = append(args, "--wait")
+
+	cmd := exec.Command("helm", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Printf("Rolling back release %s to revision %d in namespace %s\n", releaseName, revision, namespace)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("rollback failed: %v", err)
+	}
+
+	fmt.Printf("Successfully rolled back %s to revision %d\n", releaseName, revision)
+	return nil
+}
+
+// GetHelmReleaseStatus gets the current status of a Helm release
+func GetHelmReleaseStatus(releaseName, namespace string) error {
+	if releaseName == "" {
+		return fmt.Errorf("release name is required")
+	}
+
+	args := []string{"status", releaseName}
+	if namespace != "" {
+		args = append(args, "--namespace", namespace)
+	}
+
+	cmd := exec.Command("helm", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Printf("Fetching status for release: %s in namespace: %s\n", releaseName, namespace)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to get release status: %v", err)
+	}
+
+	return nil
+}
+
+// GetHelmReleaseRevision gets details about a specific revision of a Helm release
+func GetHelmReleaseRevision(releaseName string, revision int, namespace string) error {
+	if releaseName == "" {
+		return fmt.Errorf("release name is required")
+	}
+
+	args := []string{"get", "all", releaseName}
+	if namespace != "" {
+		args = append(args, "--namespace", namespace)
+	}
+	args = append(args, "--revision", strconv.Itoa(revision))
+
+	cmd := exec.Command("helm", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Printf("Fetching details for release %s revision %d in namespace %s\n", releaseName, revision, namespace)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to get revision details: %v", err)
+	}
+
+	return nil
+}
+
+// CleanupHelmReleaseHistory removes old revisions of a Helm release
+func CleanupHelmReleaseHistory(releaseName string, maxRevisions int, namespace string) error {
+	if releaseName == "" {
+		return fmt.Errorf("release name is required")
+	}
+
+	if maxRevisions < 1 {
+		return fmt.Errorf("maxRevisions must be greater than 0")
+	}
+
+	args := []string{"history", releaseName, "--max", strconv.Itoa(maxRevisions)}
+	if namespace != "" {
+		args = append(args, "--namespace", namespace)
+	}
+
+	cmd := exec.Command("helm", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Printf("Cleaning up release history for %s, keeping %d revisions in namespace %s\n", releaseName, maxRevisions, namespace)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to cleanup release history: %v", err)
+	}
+
+	return nil
+}
+
+// CompareHelmReleaseRevisions compares two revisions of a Helm release
+func CompareHelmReleaseRevisions(releaseName string, revision1, revision2 int, namespace string) error {
+	if releaseName == "" {
+		return fmt.Errorf("release name is required")
+	}
+
+	// Get manifests for both revisions
+	getManifest := func(rev int) (string, error) {
+		args := []string{"get", "manifest", releaseName}
+		if namespace != "" {
+			args = append(args, "--namespace", namespace)
+		}
+		args = append(args, "--revision", strconv.Itoa(rev))
+
+		cmd := exec.Command("helm", args...)
+		output, err := cmd.Output()
+		if err != nil {
+			return "", fmt.Errorf("failed to get manifest for revision %d: %v", rev, err)
+		}
+		return string(output), nil
+	}
+
+	manifest1, err := getManifest(revision1)
+	if err != nil {
+		return err
+	}
+
+	manifest2, err := getManifest(revision2)
+	if err != nil {
+		return err
+	}
+
+	// Write manifests to temporary files for comparison
+	tempFile1 := fmt.Sprintf("%s-rev%d.yaml", releaseName, revision1)
+	tempFile2 := fmt.Sprintf("%s-rev%d.yaml", releaseName, revision2)
+
+	if err := os.WriteFile(tempFile1, []byte(manifest1), 0644); err != nil {
+		return fmt.Errorf("failed to write temp file: %v", err)
+	}
+	defer os.Remove(tempFile1)
+
+	if err := os.WriteFile(tempFile2, []byte(manifest2), 0644); err != nil {
+		return fmt.Errorf("failed to write temp file: %v", err)
+	}
+	defer os.Remove(tempFile2)
+
+	// Use diff to compare the manifests
+	diffCmd := exec.Command("diff", "-u", tempFile1, tempFile2)
+	diffCmd.Stdout = os.Stdout
+	diffCmd.Stderr = os.Stderr
+
+	fmt.Printf("Comparing revisions %d and %d of release %s in namespace %s\n", revision1, revision2, releaseName, namespace)
+	diffCmd.Run() // Note: diff returns non-zero exit code if files differ, which is expected
+
+	return nil
 }
 
 func isLetter(r rune) bool {
