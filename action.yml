@@ -73,6 +73,19 @@ inputs:
     description: 'To build and publish docker multi architecture image'
     required: false
     default: 'false'
+  HELM_CHART_PATH:
+    description: 'Path of HELM CHART'
+    required: true
+  HELM_CHART_NAME:
+    description: 'HELM CHART NAME'
+    required: true
+  HELM_CHART_VERSION:
+    description: 'The Version of Helm Chart'
+    required: true
+  HELM_REGISTRY:
+    description: 'The Registry to push Helm Chart'
+    required: true
+
 
 runs:
   using: 'docker'
@@ -97,6 +110,9 @@ runs:
     DOCKER_BUILD_ARCHITECTURE: ${{ inputs.DOCKER_BUILD_ARCHITECTURE }}
     DOCKER_BUILD_ARGS: ${{ inputs.DOCKER_BUILD_ARGS }}
     DOCKER_NO_CACHE: ${{ inputs.DOCKER_NO_CACHE }}
+    HELM_CHART_PATH: ${{ inputs.HELM_CHART_PATH }}
+    HELM_CHART_NAME: ${{ inputs.HELM_CHART_NAME }}
+    HELM_CHART_VERSION: ${{ inputs.HELM_CHART_VERSION }}
   args:
     - '--enigmafile=${{ inputs.enigma_file }}'
     - ${{ inputs.command }}
