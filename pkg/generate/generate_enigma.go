@@ -31,7 +31,7 @@ var HELM_ENV_VARIABLES = []string{
 }
 
 // GenerateEnigmaFile writes the environment variables to the specified output file.
-func GenerateEnigmaFile(outputPath string, envType EnvType) error {
+func GenerateEnigmaFile(outputPath string) error {
 	// Create or open the output file
 	file, err := os.Create(outputPath)
 	if err != nil {
@@ -39,25 +39,22 @@ func GenerateEnigmaFile(outputPath string, envType EnvType) error {
 	}
 	defer file.Close()
 
-	// Loop through the environment variables and write each to the file
-	switch envType {
-	case DOCKER:
-		for _, env := range DOCKER_ENV_VARIABLES {
-			_, err := file.WriteString(env + "\n")
-			if err != nil {
-				return fmt.Errorf("failed to write to file: %w", err)
-			}
+	// Write Docker environment variables
+	for _, env := range DOCKER_ENV_VARIABLES {
+		_, err := file.WriteString(env + "\n")
+		if err != nil {
+			return fmt.Errorf("failed to write to file: %w", err)
 		}
-	case HELM:
-		for _, env := range HELM_ENV_VARIABLES {
-			_, err := file.WriteString(env + "\n")
-			if err != nil {
-				return fmt.Errorf("failed to write to file: %w", err)
-			}
-		}
-	default:
-		fmt.Println("Unsupported environment type:", envType)
 	}
+
+	// Write Helm environment variables
+	for _, env := range HELM_ENV_VARIABLES {
+		_, err := file.WriteString(env + "\n")
+		if err != nil {
+			return fmt.Errorf("failed to write to file: %w", err)
+		}
+	}
+
 	fmt.Println("Environment variables successfully written to", outputPath)
 	return nil
 }

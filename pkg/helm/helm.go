@@ -1,17 +1,15 @@
 package helm
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
-	"strings"
 	"unicode"
 )
 
 // InstallHelm installs Helm if it is not already installed.
-func InstallHelm() {
+func CheckHelmInstalled() {
 	fmt.Println("Checking Helm installation...")
 	cmd := exec.Command("helm", "version")
 	cmd.Stdout = os.Stdout
@@ -65,24 +63,29 @@ func LintHelmChart() {
 }
 
 // ScanHelmChart scans the Helm chart using `helm lint` for chart issues.
-func ScanHelmChart() {
+func DoInstallHelmChart() {
 	chartPath := os.Getenv("HELM_CHART_PATH")
+	chartName := os.Getenv("HELM_CHART_NAME")
 
 	if chartPath == "" {
 		log.Fatalf("HELM_CHART_PATH environment variable is not set")
 	}
 
-	cmd := exec.Command("helm", "lint", chartPath)
+	if chartName == "" {
+		log.Fatalf("HELM_CHART_NAME environment variable is not set")
+	}
+
+	cmd := exec.Command("helm", "install", chartName, chartPath)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	fmt.Printf("Scanning Helm chart: %s\n", chartPath)
+	fmt.Printf("Successfully installed Helm chart: %s\n", chartPath)
 	err := cmd.Run()
 	if err != nil {
-		log.Fatalf("Error running Helm lint: %v", err)
+		log.Fatalf("Error installing Helm Chart: %v", err)
 	}
 
-	fmt.Println("Helm chart scan complete.")
+	fmt.Println("Helm chart deployment complete.")
 }
 
 // TagHelmChart tags the Helm chart with a specific version or label.
@@ -127,44 +130,6 @@ func PushHelmChart() {
 	}
 
 	fmt.Println("Helm chart pushed successfully.")
-}
-
-// LoadEnvFromHelmFile loads environment variables from a Helm-specific .helm file.
-func LoadEnvFromHelmFile(filename string) {
-	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		fmt.Printf("%s file not found. No variables set.\n", filename)
-		return
-	}
-
-	file, err := os.Open(filename)
-	if err != nil {
-		log.Fatalf("Error opening %s file: %v", filename, err)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-
-		parts := strings.SplitN(line, ":", 2)
-		if len(parts) < 2 {
-			continue
-		}
-		key := strings.TrimSpace(parts[0])
-		value := strings.TrimSpace(parts[1])
-
-		if isValidEnvVarKey(key) {
-			if err := os.Setenv(key, value); err != nil {
-				log.Printf("Failed to set environment variable %s: %v", key, err)
-			} else {
-				fmt.Printf("Set %s to %s\n", key, value)
-			}
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		log.Fatalf("Error reading .helm file: %v", err)
-	}
 }
 
 func isLetter(r rune) bool {
