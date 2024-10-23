@@ -14,8 +14,6 @@ var initCmd = &cobra.Command{
 Used to initialize the .enigmafile
 
 --f - for specifying the enigma file.
---d - to generate enigma file for docker.
---h - to generate enigma file for helm.
 
 `,
 	Args: cobra.NoArgs,
@@ -33,37 +31,9 @@ Used to initialize the .enigmafile
 			fileName = ".enigma"
 		}
 
-		dockerFlag, err := cmd.Flags().GetBool("d")
+		err = generate.GenerateEnigmaFile(fileName)
 		if err != nil {
-			fmt.Println("Please specify the tool to generate .enigma file.")
-			os.Exit(1)
-		}
-
-		helmFlag, err := cmd.Flags().GetBool("helm")
-		if err != nil {
-			fmt.Println("Please specify the tool to generate .enigma file.")
-			os.Exit(1)
-		}
-
-		switch {
-		case dockerFlag:
-			err := generate.GenerateEnigmaFile(fileName, generate.DOCKER)
-			if err != nil {
-				fmt.Printf("Error generating %s file: %v\n", fileName, err)
-				os.Exit(1)
-			}
-			fmt.Printf("Generated %s file for Docker.\n", fileName)
-
-		case helmFlag:
-			err := generate.GenerateEnigmaFile(fileName, generate.HELM)
-			if err != nil {
-				fmt.Printf("Error generating %s file: %v\n", fileName, err)
-				os.Exit(1)
-			}
-			fmt.Printf("Generated %s file for Helm.\n", fileName)
-
-		default:
-			fmt.Println("Please specify a valid tool (Docker or Helm) to generate the .enigma file.")
+			fmt.Printf("Error generating %s file: %v\n", fileName, err)
 			os.Exit(1)
 		}
 	},

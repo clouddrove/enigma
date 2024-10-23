@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/clouddrove/enigma/pkg/docker"
 	"github.com/clouddrove/enigma/pkg/helm"
 	"github.com/spf13/cobra"
@@ -24,11 +23,10 @@ var bakeCmd = &cobra.Command{
 			docker.ScanDockerImage()
 		}
 		if helmFlag {
-			helm.LoadEnvFromHelmFile(enigmaFile)
-			helm.InstallHelm()
+			loadDockerEnv(enigmaFile)
+			helm.CheckHelmInstalled()
 			helm.LintHelmChart()
-			helm.BuildHelmChart()
-			fmt.Println("Working for helm")
+			helm.DoInstallHelmChart()
 		}
 	},
 }

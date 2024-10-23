@@ -31,8 +31,8 @@ var bake_publishCmd = &cobra.Command{
 			}
 		}
 		if helmFlag {
-			helm.LoadEnvFromHelmFile(enigmaFile)
-			helm.InstallHelm()
+			loadDockerEnv(enigmaFile)
+			helm.CheckHelmInstalled()
 			helm.LintHelmChart()
 			helm.BuildHelmChart()
 			helm.PushHelmChart()

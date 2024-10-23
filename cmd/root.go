@@ -77,13 +77,11 @@ func init() {
 	addFilenameForInitFlag(initCmd)
 
 	// Add dockerflag --d to the following commands
-	addDockerFlag(initCmd)
 	addDockerFlag(bakeCmd)
 	addDockerFlag(publishCmd)
 	addDockerFlag(bake_publishCmd)
 
 	// Add helmFlag --h to the following commands
-	addHelmFlag(initCmd)
 	addHelmFlag(bakeCmd)
 	addHelmFlag(bake_publishCmd)
 }
