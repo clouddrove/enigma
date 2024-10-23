@@ -26,6 +26,7 @@ var bakeCmd = &cobra.Command{
 			loadDockerEnv(enigmaFile)
 			helm.CheckHelmInstalled()
 			helm.LintHelmChart()
+			helm.DoHelmTemplating()
 			helm.DoInstallHelmChart()
 		}
 	},

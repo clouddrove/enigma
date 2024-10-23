@@ -62,7 +62,28 @@ func LintHelmChart() {
 	fmt.Println("Helm chart linting complete. No issues found.")
 }
 
-// ScanHelmChart scans the Helm chart using `helm lint` for chart issues.
+func DoHelmTemplating() {
+	chartPath := os.Getenv("HELM_CHART_PATH")
+
+	if chartPath == "" {
+		log.Fatalf("HELM_CHART_PATH environment variable is not set")
+	}
+
+	cmd := exec.Command("helm", "template", chartPath)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	err := cmd.Run()
+	if err != nil {
+		log.Fatalf("Error in running helm template for the Helm Chart: %v", err)
+	}
+
+	fmt.Println(cmd.Stdout)
+
+	fmt.Println("Helm chart templating complete.")
+}
+
+// DoInstallHelmChart deploys the Helm chart using `helm install`.
 func DoInstallHelmChart() {
 	chartPath := os.Getenv("HELM_CHART_PATH")
 	chartName := os.Getenv("HELM_CHART_NAME")
@@ -79,11 +100,12 @@ func DoInstallHelmChart() {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	fmt.Printf("Successfully installed Helm chart: %s\n", chartPath)
 	err := cmd.Run()
 	if err != nil {
 		log.Fatalf("Error installing Helm Chart: %v", err)
 	}
+
+	fmt.Printf("Successfully installed Helm chart: %s\n", chartPath)
 
 	fmt.Println("Helm chart deployment complete.")
 }
