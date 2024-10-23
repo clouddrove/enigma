@@ -43,7 +43,7 @@ func addDockerFlag(cmd *cobra.Command) {
 }
 
 func addHelmFlag(cmd *cobra.Command) {
-	cmd.PersistentFlags().Bool("hl", false, "use commands for helm")
+	cmd.PersistentFlags().Bool("hl", true, "use commands for helm")
 }
 
 func addFilenameForInitFlag(cmd *cobra.Command) {
