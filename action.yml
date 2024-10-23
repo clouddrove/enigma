@@ -115,5 +115,4 @@ runs:
     HELM_CHART_VERSION: ${{ inputs.HELM_CHART_VERSION }}
     HELM_REGISTRY: ${{ inputs.HELM_REGISTRY }}
   args:
-    - '--enigmafile=${{ inputs.enigma_file }}'
     - ${{ inputs.command }}
