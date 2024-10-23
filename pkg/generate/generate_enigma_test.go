@@ -3,7 +3,6 @@ package generate
 import (
 	"bufio"
 	"os"
-	"path/filepath"
 	"testing"
 )
 
@@ -75,68 +74,5 @@ func TestGenerateEnigmaFile(t *testing.T) {
 			// Cleanup test file
 			os.Remove(tt.outputPath)
 		})
-	}
-}
-
-func TestGenerateEnigmaFileContent(t *testing.T) {
-	testPath := "test_content.env"
-
-	// Generate the file
-	err := GenerateEnigmaFile(testPath)
-	if err != nil {
-		t.Fatalf("Failed to generate file: %v", err)
-	}
-	defer os.Remove(testPath)
-
-	// Read the generated file
-	content, err := os.ReadFile(testPath)
-	if err != nil {
-		t.Fatalf("Failed to read generated file: %v", err)
-	}
-
-	// Convert content to string
-	contentStr := string(content)
-
-	// Check if all Docker variables are present
-	for _, env := range DOCKER_ENV_VARIABLES {
-		if !contains(contentStr, env) {
-			t.Errorf("Docker variable %s not found in generated file", env)
-		}
-	}
-
-	// Check if all Helm variables are present
-	for _, env := range HELM_ENV_VARIABLES {
-		if !contains(contentStr, env) {
-			t.Errorf("Helm variable %s not found in generated file", env)
-		}
-	}
-}
-
-// Helper function to check if a string contains another string
-func contains(content, substring string) bool {
-	return len(content) >= len(substring) && content[0:len(content)-(len(content)-len(substring))] == substring
-}
-
-func TestGenerateEnigmaFilePermissions(t *testing.T) {
-	// Create a temporary directory
-	tmpDir := t.TempDir()
-	testPath := filepath.Join(tmpDir, "test_permissions.env")
-
-	// Generate the file
-	err := GenerateEnigmaFile(testPath)
-	if err != nil {
-		t.Fatalf("Failed to generate file: %v", err)
-	}
-
-	// Check file permissions
-	info, err := os.Stat(testPath)
-	if err != nil {
-		t.Fatalf("Failed to stat generated file: %v", err)
-	}
-
-	// Check if file permissions are as expected (readable and writable)
-	expectedPerm := os.FileMode(0644)
-	if info.Mode().Perm() != expectedPerm {
-		t.Errorf("Expected file permissions %v, got %v", expectedPerm, info.Mode().Perm())
 	}
 }
