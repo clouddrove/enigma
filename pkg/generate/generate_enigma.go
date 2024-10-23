@@ -5,13 +5,7 @@ import (
 	"os"
 )
 
-type EnvType string
-
-const (
-	DOCKER EnvType = "DOCKER"
-)
-
-var DOCKER_ENV_VARIABLES = [9]string{
+var DOCKER_ENV_VARIABLES = []string{
 	"DOCKERFILE_PATH=",
 	"DOCKER_IMAGE=",
 	"DOCKER_TAG=",
@@ -22,8 +16,15 @@ var DOCKER_ENV_VARIABLES = [9]string{
 	"DOCKER_MULTI_ARCH_BUILD=",
 }
 
+var HELM_ENV_VARIABLES = []string{
+	"HELM_CHART_PATH=",
+	"HELM_CHART_NAME=",
+	"HELM_CHART_VERSION=",
+	"HELM_REGISTRY=",
+}
+
 // GenerateEnigmaFile writes the environment variables to the specified output file.
-func GenerateEnigmaFile(outputPath string, envType EnvType) error {
+func GenerateEnigmaFile(outputPath string) error {
 	// Create or open the output file
 	file, err := os.Create(outputPath)
 	if err != nil {
@@ -31,15 +32,22 @@ func GenerateEnigmaFile(outputPath string, envType EnvType) error {
 	}
 	defer file.Close()
 
-	// Loop through the environment variables and write each to the file
-	if envType == "DOCKER" {
-		for _, env := range DOCKER_ENV_VARIABLES {
-			_, err := file.WriteString(env + "\n")
-			if err != nil {
-				return fmt.Errorf("failed to write to file: %w", err)
-			}
+	// Write Docker environment variables
+	for _, env := range DOCKER_ENV_VARIABLES {
+		_, err := file.WriteString(env + "\n")
+		if err != nil {
+			return fmt.Errorf("failed to write to file: %w", err)
 		}
 	}
+
+	// Write Helm environment variables
+	for _, env := range HELM_ENV_VARIABLES {
+		_, err := file.WriteString(env + "\n")
+		if err != nil {
+			return fmt.Errorf("failed to write to file: %w", err)
+		}
+	}
+
 	fmt.Println("Environment variables successfully written to", outputPath)
 	return nil
 }

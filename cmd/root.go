@@ -39,7 +39,11 @@ Use "enigma [command] --help" for more information about a command.`)
 }
 
 func addDockerFlag(cmd *cobra.Command) {
-	cmd.PersistentFlags().Bool("d", true, "Init for dockerfile")
+	cmd.PersistentFlags().Bool("d", false, "use commands for docker")
+}
+
+func addHelmFlag(cmd *cobra.Command) {
+	cmd.PersistentFlags().Bool("hl", true, "use commands for helm")
 }
 
 func addFilenameForInitFlag(cmd *cobra.Command) {
@@ -73,8 +77,11 @@ func init() {
 	addFilenameForInitFlag(initCmd)
 
 	// Add dockerflag --d to the following commands
-	addDockerFlag(initCmd)
 	addDockerFlag(bakeCmd)
 	addDockerFlag(publishCmd)
 	addDockerFlag(bake_publishCmd)
+
+	// Add helmFlag --h to the following commands
+	addHelmFlag(bakeCmd)
+	addHelmFlag(bake_publishCmd)
 }

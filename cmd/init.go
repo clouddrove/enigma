@@ -13,8 +13,7 @@ var initCmd = &cobra.Command{
 	Long: `
 Used to initialize the .enigmafile
 
---d - for docker
---f - for specifying the file.
+--f - for specifying the enigma file.
 
 `,
 	Args: cobra.NoArgs,
@@ -24,24 +23,18 @@ Used to initialize the .enigmafile
 			fmt.Println(err)
 			os.Exit(1)
 		}
+
 		var fileName string
 		if fileFlag != "" {
 			fileName = fmt.Sprintf(".enigma.%s", fileFlag)
 		} else {
 			fileName = ".enigma"
 		}
-		dockerFlag, err := cmd.Flags().GetBool("d")
+
+		err = generate.GenerateEnigmaFile(fileName)
 		if err != nil {
-			fmt.Println("Please specify the tool to generate .enigma file.")
+			fmt.Printf("Error generating %s file: %v\n", fileName, err)
 			os.Exit(1)
-		}
-		if dockerFlag {
-			err := generate.GenerateEnigmaFile(fileName, generate.DOCKER)
-			if err != nil {
-				fmt.Printf("Error generating %s file: %v\n", fileName, err)
-				os.Exit(1)
-			}
-			fmt.Printf("Generated %s file for Docker.", fileName)
 		}
 	},
 }

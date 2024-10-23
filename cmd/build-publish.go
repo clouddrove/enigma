@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/clouddrove/enigma/pkg/docker"
+	"github.com/clouddrove/enigma/pkg/helm"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -13,6 +14,7 @@ var bake_publishCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		enigmaFile, _ := cmd.Flags().GetString("enigmafile")
 		dockerFlag, _ := cmd.Flags().GetBool("d")
+		helmFlag, _ := cmd.Flags().GetBool("hl")
 		if dockerFlag {
 			if os.Getenv("DOCKER_MULTI_ARCH_BUILD") == "true" {
 				loadDockerEnv(enigmaFile)
@@ -27,6 +29,13 @@ var bake_publishCmd = &cobra.Command{
 				docker.TagDockerImage()
 				docker.PushDockerImage()
 			}
+		}
+		if helmFlag {
+			loadDockerEnv(enigmaFile)
+			helm.CheckHelmInstalled()
+			helm.LintHelmChart()
+			helm.BuildHelmChart()
+			helm.PushHelmChart()
 		}
 	},
 }

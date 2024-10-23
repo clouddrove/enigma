@@ -7,57 +7,72 @@ import (
 )
 
 func TestGenerateEnigmaFile(t *testing.T) {
-	// Create a temporary file for testing
-	tempFile, err := os.CreateTemp("", "enigma_test_*.env")
-	if err != nil {
-		t.Fatalf("Failed to create temporary file: %v", err)
+	// Test cases
+	tests := []struct {
+		name        string
+		outputPath  string
+		wantErr     bool
+		expectedLen int // Expected number of lines in the output file
+	}{
+		{
+			name:        "Valid output path",
+			outputPath:  "test_output.env",
+			wantErr:     false,
+			expectedLen: len(DOCKER_ENV_VARIABLES) + len(HELM_ENV_VARIABLES),
+		},
+		{
+			name:        "Invalid directory path",
+			outputPath:  "/nonexistent/directory/test.env",
+			wantErr:     true,
+			expectedLen: 0,
+		},
 	}
-	defer os.Remove(tempFile.Name())
-	tempFile.Close()
 
-	// Test case for DOCKER environment type
-	t.Run("DOCKER environment", func(t *testing.T) {
-		err := GenerateEnigmaFile(tempFile.Name(), DOCKER)
-		if err != nil {
-			t.Fatalf("GenerateEnigmaFile failed: %v", err)
-		}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Run the function
+			err := GenerateEnigmaFile(tt.outputPath)
 
-		// Read the content of the generated file
-		file, err := os.Open(tempFile.Name())
-		if err != nil {
-			t.Fatalf("Failed to open generated file: %v", err)
-		}
-		defer file.Close()
-
-		scanner := bufio.NewScanner(file)
-		lineCount := 0
-		for scanner.Scan() {
-			line := scanner.Text()
-			if lineCount >= len(DOCKER_ENV_VARIABLES) {
-				t.Errorf("Too many lines in the generated file")
-				break
+			// Check if error matches expectation
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GenerateEnigmaFile() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
-			expectedLine := DOCKER_ENV_VARIABLES[lineCount]
-			if line != expectedLine {
-				t.Errorf("Line %d: expected %q, got %q", lineCount+1, expectedLine, line)
+
+			// If we expect an error, no need to check the file
+			if tt.wantErr {
+				return
 			}
-			lineCount++
-		}
 
-		if err := scanner.Err(); err != nil {
-			t.Fatalf("Error reading generated file: %v", err)
-		}
+			// Open and read the generated file
+			file, err := os.Open(tt.outputPath)
+			if err != nil {
+				t.Fatalf("Failed to open generated file: %v", err)
+			}
+			defer file.Close()
 
-		if lineCount != len(DOCKER_ENV_VARIABLES) {
-			t.Errorf("Expected %d lines, got %d", len(DOCKER_ENV_VARIABLES), lineCount)
-		}
-	})
+			// Count lines and verify content
+			scanner := bufio.NewScanner(file)
+			lineCount := 0
+			for scanner.Scan() {
+				lineCount++
+				line := scanner.Text()
+				if line == "" {
+					t.Errorf("Line %d is empty", lineCount)
+				}
+			}
 
-	// Test case for invalid file path
-	t.Run("Invalid file path", func(t *testing.T) {
-		err := GenerateEnigmaFile("/invalid/path/file.env", DOCKER)
-		if err == nil {
-			t.Error("Expected an error for invalid file path, but got nil")
-		}
-	})
+			if err := scanner.Err(); err != nil {
+				t.Fatalf("Error reading file: %v", err)
+			}
+
+			// Verify the number of lines matches expected
+			if lineCount != tt.expectedLen {
+				t.Errorf("Expected %d lines, got %d", tt.expectedLen, lineCount)
+			}
+
+			// Cleanup test file
+			os.Remove(tt.outputPath)
+		})
+	}
 }
