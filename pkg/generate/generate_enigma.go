@@ -5,13 +5,6 @@ import (
 	"os"
 )
 
-type EnvType string
-
-const (
-	DOCKER EnvType = "DOCKER"
-	HELM   EnvType = "HELM"
-)
-
 var DOCKER_ENV_VARIABLES = []string{
 	"DOCKERFILE_PATH=",
 	"DOCKER_IMAGE=",
